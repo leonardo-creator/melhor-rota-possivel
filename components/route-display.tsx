@@ -15,32 +15,32 @@ export default function RouteDisplay({ route, points }: RouteDisplayProps) {
   const minutes = Math.round((totalTimeHours - hours) * 60)
 
   return (
-    <Card className="bg-[#1a0063] border-[#d4d4d8]">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="text-[#42eedc]">Optimal Route</CardTitle>
+        <CardTitle className="text-primary">Optimal Route</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="bg-[#110043] p-4 rounded-md">
-              <p className="text-sm text-[#d4d4d8]">Total Distance</p>
-              <p className="text-2xl font-bold text-[#a2ff00]">{route.totalDistance.toFixed(2)} km</p>
+            <div className="bg-accent p-4 rounded-md">
+              <p className="text-sm text-muted-foreground">Total Distance</p>
+              <p className="text-2xl font-bold text-success">{route.totalDistance.toFixed(2)} km</p>
             </div>
-            <div className="bg-[#110043] p-4 rounded-md">
-              <p className="text-sm text-[#d4d4d8]">Estimated Time</p>
-              <p className="text-2xl font-bold text-[#42eedc]">
+            <div className="bg-accent p-4 rounded-md">
+              <p className="text-sm text-muted-foreground">Estimated Time</p>
+              <p className="text-2xl font-bold text-primary">
                 {hours > 0 ? `${hours}h ` : ""}
                 {minutes}m
               </p>
             </div>
-            <div className="bg-[#110043] p-4 rounded-md">
-              <p className="text-sm text-[#d4d4d8]">Route Points</p>
-              <p className="text-2xl font-bold text-[#f1f5f9]">{points.length}</p>
+            <div className="bg-accent p-4 rounded-md">
+              <p className="text-sm text-muted-foreground">Route Points</p>
+              <p className="text-2xl font-bold text-foreground">{points.length}</p>
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium mb-3 text-[#f1f5f9]">Route Sequence</h3>
+            <h3 className="text-lg font-medium mb-3 text-foreground">Route Sequence</h3>
             <div className="flex flex-wrap gap-2 mb-6">
               {route.path.map((pointIndex, i) => (
                 <div key={i} className="flex items-center">
@@ -48,32 +48,32 @@ export default function RouteDisplay({ route, points }: RouteDisplayProps) {
                     className={`
                       ${
                         i === 0
-                          ? "bg-[#a2ff00] text-[#110043]"
+                          ? "bg-success text-success-foreground"
                           : i === route.path.length - 1
-                            ? "bg-[#ff3f19]"
-                            : "bg-[#3700ff]"
+                            ? "bg-destructive text-destructive-foreground"
+                            : "bg-primary text-primary-foreground"
                       } mr-1
                     `}
                   >
                     {points[pointIndex].id}
                   </Badge>
-                  <span className="text-[#f1f5f9]">{points[pointIndex].description}</span>
-                  {i < route.path.length - 1 && <span className="mx-2 text-[#d4d4d8]">→</span>}
+                  <span className="text-foreground">{points[pointIndex].description}</span>
+                  {i < route.path.length - 1 && <span className="mx-2 text-muted-foreground">→</span>}
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium mb-3 text-[#f1f5f9]">Route Details</h3>
+            <h3 className="text-lg font-medium mb-3 text-foreground">Route Details</h3>
             <Table>
               <TableHeader>
-                <TableRow className="border-[#d4d4d8]">
-                  <TableHead className="text-[#42eedc]">Segment</TableHead>
-                  <TableHead className="text-[#42eedc]">From</TableHead>
-                  <TableHead className="text-[#42eedc]">To</TableHead>
-                  <TableHead className="text-[#42eedc] text-right">Distance (km)</TableHead>
-                  <TableHead className="text-[#42eedc] text-right">Est. Time</TableHead>
+                <TableRow className="border-border">
+                  <TableHead className="text-primary">Segment</TableHead>
+                  <TableHead className="text-primary">From</TableHead>
+                  <TableHead className="text-primary">To</TableHead>
+                  <TableHead className="text-primary text-right">Distance (km)</TableHead>
+                  <TableHead className="text-primary text-right">Est. Time</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -83,28 +83,28 @@ export default function RouteDisplay({ route, points }: RouteDisplayProps) {
                   const timeMinutes = Math.round((segment.distance / 60) * 60)
 
                   return (
-                    <TableRow key={index} className="border-[#d4d4d8]">
-                      <TableCell className="font-medium text-[#f1f5f9]">{index + 1}</TableCell>
+                    <TableRow key={index} className="border-border">
+                      <TableCell className="font-medium text-foreground">{index + 1}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
-                          <Badge className={`${index === 0 ? "bg-[#a2ff00] text-[#110043]" : "bg-[#3700ff]"} mr-2`}>
+                          <Badge className={`${index === 0 ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"} mr-2`}>
                             {fromPoint.id}
                           </Badge>
-                          <span className="text-[#f1f5f9]">{fromPoint.description}</span>
+                          <span className="text-foreground">{fromPoint.description}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center">
                           <Badge
-                            className={`${index === route.segments.length - 1 ? "bg-[#ff3f19]" : "bg-[#3700ff]"} mr-2`}
+                            className={`${index === route.segments.length - 1 ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"} mr-2`}
                           >
                             {toPoint.id}
                           </Badge>
-                          <span className="text-[#f1f5f9]">{toPoint.description}</span>
+                          <span className="text-foreground">{toPoint.description}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right text-[#f1f5f9]">{segment.distance.toFixed(2)}</TableCell>
-                      <TableCell className="text-right text-[#f1f5f9]">{timeMinutes} min</TableCell>
+                      <TableCell className="text-right text-foreground">{segment.distance.toFixed(2)}</TableCell>
+                      <TableCell className="text-right text-foreground">{timeMinutes} min</TableCell>
                     </TableRow>
                   )
                 })}

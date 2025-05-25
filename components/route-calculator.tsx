@@ -52,11 +52,11 @@ export default function RouteCalculator() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-[#1a0063] border-[#d4d4d8]">
+      <Card className="bg-card border-border">
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="routeString" className="block mb-2">
+              <label htmlFor="routeString" className="block mb-2 text-foreground">
                 Route String (format: /id/description/latitude/longitude)
               </label>
               <div className="flex gap-2">
@@ -65,21 +65,21 @@ export default function RouteCalculator() {
                   value={routeString}
                   onChange={(e) => setRouteString(e.target.value)}
                   placeholder="1/house1/-11.65464654/-49.654165415 2/store/-11.65864123/-49.65123456"
-                  className="bg-[#110043] border-[#d4d4d8] text-[#f1f5f9]"
+                  className="bg-input border-border text-foreground"
                 />
                 <Button
                   type="button"
                   onClick={handleAddExample}
                   variant="outline"
-                  className="border-[#3700ff] text-[#42eedc]"
+                  className="border-primary text-primary hover:bg-accent"
                 >
                   Example
                 </Button>
               </div>
-              <p className="text-sm text-[#d4d4d8] mt-1">Separate multiple points with spaces</p>
+              <p className="text-sm text-muted-foreground mt-1">Separate multiple points with spaces</p>
             </div>
 
-            <Button type="submit" className="bg-[#3700ff] hover:bg-[#3700ff]/90 text-[#f1f5f9]">
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
               Calculate Route
             </Button>
           </form>
@@ -87,7 +87,7 @@ export default function RouteCalculator() {
       </Card>
 
       {error && (
-        <Alert className="bg-[#ff3f19]/10 border-[#ff3f19] text-[#ff3f19]">
+        <Alert className="bg-destructive/10 border-destructive text-destructive-foreground">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

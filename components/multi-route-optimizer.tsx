@@ -48,7 +48,7 @@ export default function MultiRouteOptimizer() {
       const routePoints = parseRouteData(routeData)
 
       if (routePoints.length < 2) {
-        setError("Please enter at least two route points to calculate a route")
+        setError("Por favor, insira pelo menos dois pontos de rota para calcular uma rota")
         return
       }
 
@@ -63,12 +63,12 @@ export default function MultiRouteOptimizer() {
         endPointId && endPointId !== "auto" ? routePoints.findIndex((p) => p.id.toString() === endPointId) : undefined
 
       if (startPointId && startPointId !== "auto" && startIndex === -1) {
-        setError(`Start point with ID ${startPointId} not found`)
+        setError(`Ponto de início com ID ${startPointId} não encontrado`)
         return
       }
 
       if (endPointId && endPointId !== "auto" && endIndex === -1) {
-        setError(`End point with ID ${endPointId} not found`)
+        setError(`Ponto final com ID ${endPointId} não encontrado`)
         return
       }
 
@@ -94,7 +94,7 @@ export default function MultiRouteOptimizer() {
         setEndPointId(routePoints[bestRoute.path[bestRoute.path.length - 1]].id.toString())
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid route data format")
+      setError(err instanceof Error ? err.message : "Formato de dados de rota inválido")
     }
   }
 
@@ -128,43 +128,43 @@ export default function MultiRouteOptimizer() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-[#1a0063] border-[#d4d4d8]">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-[#42eedc]">Advanced Route Optimizer</CardTitle>
+          <CardTitle className="text-primary">Otimizador de Rota Avançado</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="routeData" className="block mb-2 text-[#f1f5f9]">
-                Route Data (one point per line, format: id description latitude longitude)
+              <label htmlFor="routeData" className="block mb-2 text-foreground">
+                Dados de rota (um ponto por linha, formato: id descrição latitude longitude)
               </label>
               <Textarea
                 id="routeData"
                 value={routeData}
                 onChange={(e) => setRouteData(e.target.value)}
-                placeholder="1 Office -11.684651 -49.85554651&#10;2 Warehouse -11.4651 -49.854651"
-                className="bg-[#110043] border-[#d4d4d8] text-[#f1f5f9] min-h-[150px] font-mono"
+                placeholder="1 Escritório -11.684651 -49.85554651&#10;2 Armazém -11.4651 -49.854651"
+                className="bg-input border-border text-foreground min-h-[150px] font-mono"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="startPoint" className="text-[#f1f5f9]">
-                  Start Point (optional)
+                <Label htmlFor="startPoint" className="text-foreground">
+                  Ponto de Início (opcional)
                 </Label>
                 <Select value={startPointId} onValueChange={setStartPointId}>
-                  <SelectTrigger id="startPoint" className="bg-[#110043] border-[#d4d4d8] text-[#f1f5f9]">
-                    <SelectValue placeholder="Select start point" />
+                  <SelectTrigger id="startPoint" className="bg-input border-border text-foreground">
+                    <SelectValue placeholder="Selecione o ponto de início" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1a0063] border-[#d4d4d8] text-[#f1f5f9]">
-                    <SelectItem value="auto" className="text-[#f1f5f9] focus:bg-[#3700ff] focus:text-[#f1f5f9]">
-                      Auto (algorithm decides)
+                  <SelectContent className="bg-popover border-border text-popover-foreground">
+                    <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
+                      Automático (decidido pelo algoritmo)
                     </SelectItem>
                     {points.map((point) => (
                       <SelectItem
                         key={`start-${point.id}`}
                         value={point.id.toString()}
-                        className="text-[#f1f5f9] focus:bg-[#3700ff] focus:text-[#f1f5f9]"
+                        className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
                       >
                         {point.id}: {point.description}
                       </SelectItem>
@@ -174,22 +174,22 @@ export default function MultiRouteOptimizer() {
               </div>
 
               <div>
-                <Label htmlFor="endPoint" className="text-[#f1f5f9]">
-                  End Point (optional)
+                <Label htmlFor="endPoint" className="text-foreground">
+                  Ponto Final (opcional)
                 </Label>
                 <Select value={endPointId} onValueChange={setEndPointId}>
-                  <SelectTrigger id="endPoint" className="bg-[#110043] border-[#d4d4d8] text-[#f1f5f9]">
-                    <SelectValue placeholder="Select end point" />
+                  <SelectTrigger id="endPoint" className="bg-input border-border text-foreground">
+                    <SelectValue placeholder="Selecione o ponto final" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1a0063] border-[#d4d4d8] text-[#f1f5f9]">
-                    <SelectItem value="auto" className="text-[#f1f5f9] focus:bg-[#3700ff] focus:text-[#f1f5f9]">
-                      Auto (algorithm decides)
+                  <SelectContent className="bg-popover border-border text-popover-foreground">
+                    <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
+                      Automático (decidido pelo algoritmo)
                     </SelectItem>
                     {points.map((point) => (
                       <SelectItem
                         key={`end-${point.id}`}
                         value={point.id.toString()}
-                        className="text-[#f1f5f9] focus:bg-[#3700ff] focus:text-[#f1f5f9]"
+                        className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
                       >
                         {point.id}: {point.description}
                       </SelectItem>
@@ -199,51 +199,51 @@ export default function MultiRouteOptimizer() {
               </div>
             </div>
 
-            <div className="bg-[#110043] p-4 rounded-md">
-              <Label className="text-[#f1f5f9] mb-2 block">Optimization Algorithm</Label>
+            <div className="bg-card p-4 rounded-md border border-border">
+              <Label className="text-foreground mb-2 block">Algoritmo de Otimização</Label>
               <RadioGroup
                 value={selectedAlgorithm}
                 onValueChange={setSelectedAlgorithm}
                 className="flex flex-wrap gap-4"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="best" id="best" className="text-[#a2ff00]" />
-                  <Label htmlFor="best" className="text-[#f1f5f9]">
-                    Best Result
+                  <RadioGroupItem value="best" id="best" className="text-success" />
+                  <Label htmlFor="best" className="text-foreground">
+                    Melhor Resultado
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="nearestNeighbor" id="nearestNeighbor" className="text-[#42eedc]" />
-                  <Label htmlFor="nearestNeighbor" className="text-[#f1f5f9]">
-                    Nearest Neighbor
+                  <RadioGroupItem value="nearestNeighbor" id="nearestNeighbor" className="text-accent-foreground" />
+                  <Label htmlFor="nearestNeighbor" className="text-foreground">
+                    Vizinho Mais Próximo
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="twoOpt" id="twoOpt" className="text-[#42eedc]" />
-                  <Label htmlFor="twoOpt" className="text-[#f1f5f9]">
+                  <RadioGroupItem value="twoOpt" id="twoOpt" className="text-accent-foreground" />
+                  <Label htmlFor="twoOpt" className="text-foreground">
                     2-Opt
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="genetic" id="genetic" className="text-[#42eedc]" />
-                  <Label htmlFor="genetic" className="text-[#f1f5f9]">
-                    Genetic Algorithm
+                  <RadioGroupItem value="genetic" id="genetic" className="text-accent-foreground" />
+                  <Label htmlFor="genetic" className="text-foreground">
+                    Algoritmo Genético
                   </Label>
                 </div>
               </RadioGroup>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit" className="bg-[#3700ff] hover:bg-[#3700ff]/90 text-[#f1f5f9]">
-                Calculate Optimal Routes
+              <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                Calcular Rotas Ótimas
               </Button>
               <Button
                 type="button"
                 onClick={handleAddExample}
                 variant="outline"
-                className="border-[#3700ff] text-[#42eedc]"
+                className="border-primary text-primary hover:bg-accent"
               >
-                Load Example Data
+                Carregar Dados de Exemplo
               </Button>
 
               {selectedRoute && points.length > 0 && (
@@ -251,10 +251,10 @@ export default function MultiRouteOptimizer() {
                   type="button"
                   onClick={handleExportData}
                   variant="outline"
-                  className="border-[#a2ff00] text-[#a2ff00] hover:bg-[#a2ff00]/10"
+                  className="border-success text-success hover:bg-success/10"
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Export Route
+                  Exportar Rota
                 </Button>
               )}
             </div>
@@ -263,7 +263,7 @@ export default function MultiRouteOptimizer() {
       </Card>
 
       {error && (
-        <Alert className="bg-[#ff3f19]/10 border-[#ff3f19] text-[#ff3f19]">
+        <Alert className="bg-destructive/10 border-destructive text-destructive-foreground">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -271,17 +271,17 @@ export default function MultiRouteOptimizer() {
       {selectedRoute && points.length > 0 && (
         <div className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-[#110043] border-[#d4d4d8] grid w-full grid-cols-2">
-              <TabsTrigger value="map" className="data-[state=active]:bg-[#3700ff] data-[state=active]:text-[#f1f5f9]">
+            <TabsList className="bg-card border-border grid w-full grid-cols-2">
+              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground">
                 <Map className="h-4 w-4 mr-2" />
-                Map View
+                Visão de Mapa
               </TabsTrigger>
               <TabsTrigger
                 value="comparison"
-                className="data-[state=active]:bg-[#3700ff] data-[state=active]:text-[#f1f5f9]"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
-                Algorithm Comparison
+                Comparação de Algoritmos
               </TabsTrigger>
             </TabsList>
 
@@ -298,122 +298,122 @@ export default function MultiRouteOptimizer() {
             </TabsContent>
 
             <TabsContent value="comparison" className="mt-4">
-              <Card className="bg-[#1a0063] border-[#d4d4d8]">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-[#42eedc]">Algorithm Performance Comparison</CardTitle>
+                  <CardTitle className="text-primary">Comparação de Desempenho dos Algoritmos</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       {calculatedRoutes.nearestNeighbor && (
                         <div
-                          className={`bg-[#110043] p-4 rounded-md border-2 ${selectedAlgorithm === "nearestNeighbor" ? "border-[#42eedc]" : "border-[#110043]"}`}
+                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "nearestNeighbor" ? "border-primary" : "border-border"}`}
                         >
-                          <h3 className="text-[#f1f5f9] font-bold mb-2">Nearest Neighbor</h3>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Total Distance:</p>
-                          <p className="text-[#42eedc] text-xl font-bold mb-2">
+                          <h3 className="text-foreground font-bold mb-2">Vizinho Mais Próximo</h3>
+                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
+                          <p className="text-primary text-xl font-bold mb-2">
                             {calculatedRoutes.nearestNeighbor.totalDistance.toFixed(2)} km
                           </p>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Computation:</p>
-                          <p className="text-[#a2ff00] text-sm">Fast</p>
+                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
+                          <p className="text-success text-sm">Rápido</p>
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => setSelectedAlgorithm("nearestNeighbor")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "nearestNeighbor" ? "bg-[#3700ff] text-[#f1f5f9]" : "border-[#3700ff] text-[#42eedc]"}`}
+                            className={`mt-2 w-full ${selectedAlgorithm === "nearestNeighbor" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
                           >
-                            {selectedAlgorithm === "nearestNeighbor" ? "Selected" : "Select"}
+                            {selectedAlgorithm === "nearestNeighbor" ? "Selecionado" : "Selecionar"}
                           </Button>
                         </div>
                       )}
 
                       {calculatedRoutes.twoOpt && (
                         <div
-                          className={`bg-[#110043] p-4 rounded-md border-2 ${selectedAlgorithm === "twoOpt" ? "border-[#42eedc]" : "border-[#110043]"}`}
+                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "twoOpt" ? "border-primary" : "border-border"}`}
                         >
-                          <h3 className="text-[#f1f5f9] font-bold mb-2">2-Opt Algorithm</h3>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Total Distance:</p>
-                          <p className="text-[#42eedc] text-xl font-bold mb-2">
+                          <h3 className="text-foreground font-bold mb-2">Algoritmo 2-Opt</h3>
+                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
+                          <p className="text-primary text-xl font-bold mb-2">
                             {calculatedRoutes.twoOpt.totalDistance.toFixed(2)} km
                           </p>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Computation:</p>
-                          <p className="text-[#a2ff00] text-sm">Medium</p>
+                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
+                          <p className="text-success text-sm">Médio</p>
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => setSelectedAlgorithm("twoOpt")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "twoOpt" ? "bg-[#3700ff] text-[#f1f5f9]" : "border-[#3700ff] text-[#42eedc]"}`}
+                            className={`mt-2 w-full ${selectedAlgorithm === "twoOpt" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
                           >
-                            {selectedAlgorithm === "twoOpt" ? "Selected" : "Select"}
+                            {selectedAlgorithm === "twoOpt" ? "Selecionado" : "Selecionar"}
                           </Button>
                         </div>
                       )}
 
                       {calculatedRoutes.genetic && (
                         <div
-                          className={`bg-[#110043] p-4 rounded-md border-2 ${selectedAlgorithm === "genetic" ? "border-[#42eedc]" : "border-[#110043]"}`}
+                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "genetic" ? "border-primary" : "border-border"}`}
                         >
-                          <h3 className="text-[#f1f5f9] font-bold mb-2">Genetic Algorithm</h3>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Total Distance:</p>
-                          <p className="text-[#42eedc] text-xl font-bold mb-2">
+                          <h3 className="text-foreground font-bold mb-2">Algoritmo Genético</h3>
+                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
+                          <p className="text-primary text-xl font-bold mb-2">
                             {calculatedRoutes.genetic.totalDistance.toFixed(2)} km
                           </p>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Computation:</p>
-                          <p className="text-[#a2ff00] text-sm">Complex</p>
+                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
+                          <p className="text-success text-sm">Complexo</p>
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => setSelectedAlgorithm("genetic")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "genetic" ? "bg-[#3700ff] text-[#f1f5f9]" : "border-[#3700ff] text-[#42eedc]"}`}
+                            className={`mt-2 w-full ${selectedAlgorithm === "genetic" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
                           >
-                            {selectedAlgorithm === "genetic" ? "Selected" : "Select"}
+                            {selectedAlgorithm === "genetic" ? "Selecionado" : "Selecionar"}
                           </Button>
                         </div>
                       )}
 
                       {calculatedRoutes.best && (
                         <div
-                          className={`bg-[#110043] p-4 rounded-md border-2 ${selectedAlgorithm === "best" ? "border-[#a2ff00]" : "border-[#110043]"}`}
+                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "best" ? "border-success" : "border-border"}`}
                         >
-                          <h3 className="text-[#f1f5f9] font-bold mb-2">Best Result</h3>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Total Distance:</p>
-                          <p className="text-[#42eedc] text-xl font-bold mb-2">
+                          <h3 className="text-foreground font-bold mb-2">Melhor Resultado</h3>
+                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
+                          <p className="text-primary text-xl font-bold mb-2">
                             {calculatedRoutes.best.totalDistance.toFixed(2)} km
                           </p>
-                          <p className="text-[#d4d4d8] text-sm mb-1">Algorithm:</p>
-                          <p className="text-[#a2ff00] text-sm">
+                          <p className="text-muted-foreground text-sm mb-1">Algoritmo:</p>
+                          <p className="text-success text-sm">
                             {calculatedRoutes.best.totalDistance === calculatedRoutes.nearestNeighbor?.totalDistance
-                              ? "Nearest Neighbor"
+                              ? "Vizinho Mais Próximo"
                               : calculatedRoutes.best.totalDistance === calculatedRoutes.twoOpt?.totalDistance
                                 ? "2-Opt"
-                                : "Genetic"}
+                                : "Genético"}
                           </p>
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => setSelectedAlgorithm("best")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "best" ? "bg-[#3700ff] text-[#f1f5f9]" : "border-[#3700ff] text-[#42eedc]"}`}
+                            className={`mt-2 w-full ${selectedAlgorithm === "best" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
                           >
-                            {selectedAlgorithm === "best" ? "Selected" : "Select"}
+                            {selectedAlgorithm === "best" ? "Selecionado" : "Selecionar"}
                           </Button>
                         </div>
                       )}
                     </div>
 
-                    <div className="bg-[#110043] p-4 rounded-md">
-                      <h3 className="text-[#f1f5f9] font-bold mb-4">Distance Comparison</h3>
+                    <div className="bg-card p-4 rounded-md border border-border">
+                      <h3 className="text-foreground font-bold mb-4">Comparação de Distâncias</h3>
                       <div className="space-y-4">
                         {calculatedRoutes.nearestNeighbor && (
                           <div>
                             <div className="flex justify-between mb-1">
-                              <span className="text-[#f1f5f9]">Nearest Neighbor</span>
-                              <span className="text-[#42eedc]">
+                              <span className="text-foreground">Vizinho Mais Próximo</span>
+                              <span className="text-primary">
                                 {calculatedRoutes.nearestNeighbor.totalDistance.toFixed(2)} km
                               </span>
                             </div>
-                            <div className="w-full bg-[#1a0063] rounded-full h-2.5">
+                            <div className="w-full bg-muted rounded-full h-2.5">
                               <div
-                                className="bg-[#42eedc] h-2.5 rounded-full"
+                                className="bg-primary h-2.5 rounded-full"
                                 style={{
                                   width: `${
                                     (calculatedRoutes.nearestNeighbor.totalDistance /
@@ -433,14 +433,14 @@ export default function MultiRouteOptimizer() {
                         {calculatedRoutes.twoOpt && (
                           <div>
                             <div className="flex justify-between mb-1">
-                              <span className="text-[#f1f5f9]">2-Opt Algorithm</span>
-                              <span className="text-[#42eedc]">
+                              <span className="text-foreground">2-Opt Algorithm</span>
+                              <span className="text-primary">
                                 {calculatedRoutes.twoOpt.totalDistance.toFixed(2)} km
                               </span>
                             </div>
-                            <div className="w-full bg-[#1a0063] rounded-full h-2.5">
+                            <div className="w-full bg-muted rounded-full h-2.5">
                               <div
-                                className="bg-[#42eedc] h-2.5 rounded-full"
+                                className="bg-primary h-2.5 rounded-full"
                                 style={{
                                   width: `${
                                     (calculatedRoutes.twoOpt.totalDistance /
@@ -460,14 +460,14 @@ export default function MultiRouteOptimizer() {
                         {calculatedRoutes.genetic && (
                           <div>
                             <div className="flex justify-between mb-1">
-                              <span className="text-[#f1f5f9]">Genetic Algorithm</span>
-                              <span className="text-[#42eedc]">
+                              <span className="text-foreground">Genetic Algorithm</span>
+                              <span className="text-primary">
                                 {calculatedRoutes.genetic.totalDistance.toFixed(2)} km
                               </span>
                             </div>
-                            <div className="w-full bg-[#1a0063] rounded-full h-2.5">
+                            <div className="w-full bg-muted rounded-full h-2.5">
                               <div
-                                className="bg-[#42eedc] h-2.5 rounded-full"
+                                className="bg-primary h-2.5 rounded-full"
                                 style={{
                                   width: `${
                                     (calculatedRoutes.genetic.totalDistance /
@@ -486,26 +486,24 @@ export default function MultiRouteOptimizer() {
                       </div>
                     </div>
 
-                    <div className="bg-[#110043] p-4 rounded-md">
-                      <h3 className="text-[#f1f5f9] font-bold mb-2">Algorithm Information</h3>
-                      <div className="space-y-2 text-sm text-[#d4d4d8]">
+                    <div className="bg-card p-4 rounded-md border border-border">
+                      <h3 className="text-foreground font-bold mb-2">Informações sobre Algoritmos</h3>
+                      <div className="space-y-2 text-sm text-muted-foreground">
                         <p>
-                          <span className="text-[#42eedc] font-bold">Nearest Neighbor:</span> A greedy algorithm that
-                          always selects the closest unvisited point. Fast but may not find the optimal solution.
+                          <span className="text-primary font-bold">Vizinho Mais Próximo:</span> Um algoritmo guloso que
+                          sempre seleciona o ponto não visitado mais próximo. Rápido, mas pode não encontrar a solução ótima.
                         </p>
                         <p>
-                          <span className="text-[#42eedc] font-bold">2-Opt:</span> Improves an initial route by swapping
-                          edges to reduce total distance. Better results than Nearest Neighbor with moderate computation
-                          time.
+                          <span className="text-primary font-bold">2-Opt:</span> Melhora uma rota inicial trocando
+                          arestas para reduzir a distância total. Melhores resultados do que o Vizinho Mais Próximo com tempo de cálculo moderado.
                         </p>
                         <p>
-                          <span className="text-[#42eedc] font-bold">Genetic Algorithm:</span> Uses evolutionary
-                          principles to find optimal routes. Can find better solutions for complex routes but requires
-                          more computation.
+                          <span className="text-primary font-bold">Algoritmo Genético:</span> Usa princípios evolutivos
+                          para encontrar rotas ótimas. Pode encontrar melhores soluções para rotas complexas, mas requer mais cálculo.
                         </p>
                         <p>
-                          <span className="text-[#a2ff00] font-bold">Best Result:</span> Automatically selects the route
-                          with the shortest total distance from all calculated algorithms.
+                          <span className="text-success font-bold">Melhor Resultado:</span> Seleciona automaticamente a rota
+                          com a menor distância total entre todos os algoritmos calculados.
                         </p>
                       </div>
                     </div>

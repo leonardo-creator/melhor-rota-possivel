@@ -7,8 +7,7 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "*.{js,ts,jsx,tsx,mdx}"
-  ],
-  theme: {
+  ],  theme: {
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',
@@ -41,6 +40,10 @@ const config: Config = {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
+  			success: {
+  				DEFAULT: 'hsl(var(--success))',
+  				foreground: 'hsl(var(--success-foreground))'
+  			},
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
@@ -60,7 +63,15 @@ const config: Config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+  			// Light theme color palette
+  			'dark-navy': '#1F2937', // Dark Gray for text
+  			'light-gray': '#F3F4F6', // Light Gray for backgrounds
+  			'electric-blue': '#3B82F6', // Standard Blue
+  			'cyan-accent': '#06B6D4', // Standard Cyan
+  			'neutral-gray': '#D1D5DB', // Medium Gray for borders
+  			'success-green': '#10B981', // Standard Green
+  			'danger-red': '#EF4444' // Standard Red
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -1167,15 +1167,15 @@ export default function EnhancedRouteMap({
       compassX,
       compassY + compassRadius * 0.2,
     )
-    needleGradient.addColorStop(0, "#ff3f19") // Red at north tip
-    needleGradient.addColorStop(0.5, "#ff6347") // Lighter in middle
-    needleGradient.addColorStop(1, "#f1f5f9") // White at south end
+    needleGradient.addColorStop(0, "#4A4A4A") // Dark gray for North
+    needleGradient.addColorStop(0.5, "#707070") // Medium gray
+    needleGradient.addColorStop(1, "#1E1E1E") // Darker gray
 
     ctx.fillStyle = needleGradient
     ctx.fill()
 
     // Add needle border
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
@@ -1212,17 +1212,17 @@ export default function EnhancedRouteMap({
 
     // Create gradient for scale bar
     const scaleGradient = ctx.createLinearGradient(scaleBarX, scaleBarY, scaleBarX + scaleBarLength, scaleBarY)
-    scaleGradient.addColorStop(0, "#3700ff") // Blue at start
-    scaleGradient.addColorStop(0.5, "#42eedc") // Teal in middle
-    scaleGradient.addColorStop(1, "#a2ff00") // Green at end
+    scaleGradient.addColorStop(0, "#E0E0E0") // Light gray
+    scaleGradient.addColorStop(0.5, "#F5F5F5") // Lighter gray
+    scaleGradient.addColorStop(1, "#D0D0D0") // Medium light gray
 
     ctx.fillStyle = scaleGradient
     ctx.fill()
 
     // Add subtle glow
-    ctx.shadowColor = "#42eedc"
+    ctx.shadowColor = "#A0A0A0" // Medium gray glow
     ctx.shadowBlur = 5
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
     ctx.shadowBlur = 0
@@ -1235,22 +1235,22 @@ export default function EnhancedRouteMap({
     ctx.lineTo(scaleBarX + scaleBarLength / 2, scaleBarY + 5)
     ctx.moveTo(scaleBarX + scaleBarLength, scaleBarY - 10)
     ctx.lineTo(scaleBarX + scaleBarLength, scaleBarY + 10)
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark ticks
     ctx.lineWidth = 2
     ctx.stroke()
 
     // Draw scale text with enhanced styling
     ctx.font = "bold 12px Arial"
     ctx.textAlign = "center"
-    ctx.shadowColor = "#42eedc"
+    ctx.shadowColor = "#A0A0A0" // Medium gray shadow
     ctx.shadowBlur = 3
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.fillText(`${roundedDistance.toFixed(1)} km`, scaleBarX + scaleBarLength / 2, scaleBarY - 15)
     ctx.shadowBlur = 0
 
     // Draw subdivisions
     ctx.font = "10px Arial"
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.fillText("0", scaleBarX, scaleBarY + 15)
     ctx.fillText(`${(roundedDistance / 2).toFixed(1)}`, scaleBarX + scaleBarLength / 2, scaleBarY + 15)
     ctx.fillText(`${roundedDistance.toFixed(1)}`, scaleBarX + scaleBarLength, scaleBarY + 15)
@@ -1265,15 +1265,15 @@ export default function EnhancedRouteMap({
     ctx.beginPath()
     ctx.arc(legendX, legendY, legendRadius, 0, Math.PI * 2)
     const startGradient = ctx.createRadialGradient(legendX - 2, legendY - 2, 0, legendX, legendY, legendRadius)
-    startGradient.addColorStop(0, "#c4ff65")
-    startGradient.addColorStop(1, "#a2ff00")
+    startGradient.addColorStop(0, "#90EE90") // Light green
+    startGradient.addColorStop(1, "#32CD32") // Lime green
     ctx.fillStyle = startGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.textAlign = "left"
     ctx.font = "12px Arial"
     ctx.fillText("Start Point", legendX + legendRadius + 5, legendY + 4)
@@ -1289,15 +1289,15 @@ export default function EnhancedRouteMap({
       legendY + legendSpacing,
       legendRadius,
     )
-    endGradient.addColorStop(0, "#ff6347")
-    endGradient.addColorStop(1, "#ff3f19")
+    endGradient.addColorStop(0, "#FFA07A") // Light salmon
+    endGradient.addColorStop(1, "#FF6347") // Tomato
     ctx.fillStyle = endGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.fillText("End Point", legendX + legendRadius + 5, legendY + legendSpacing + 4)
 
     // Waypoint legend
@@ -1311,27 +1311,23 @@ export default function EnhancedRouteMap({
       legendY + legendSpacing * 2,
       legendRadius,
     )
-    waypointGradient.addColorStop(0, "#7df9e9")
-    waypointGradient.addColorStop(1, "#42eedc")
+    waypointGradient.addColorStop(0, "#ADD8E6") // Light blue
+    waypointGradient.addColorStop(1, "#87CEEB") // Sky blue
     ctx.fillStyle = waypointGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1E1E1E" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.fillText("Waypoint", legendX + legendRadius + 5, legendY + legendSpacing * 2 + 4)
 
     // Add alternative route legend if showing alternatives
     if (showAlternativeRoutes && alternativeRoutes.length > 0) {
-      ctx.beginPath()
-      ctx.moveTo(legendX, legendY + legendSpacing * 3)
-      ctx.lineTo(legendX + legendRadius * 2, legendY + legendSpacing * 3)
-      ctx.lineWidth = 3
-      ctx.strokeStyle = "#9CA3AF"
+      ctx.strokeStyle = "#A9A9A9" // Dark gray for alternative routes
       ctx.stroke()
 
-      ctx.fillStyle = "#f1f5f9" // Light text for readability
+      ctx.fillStyle = "#1E1E1E" // Dark text
       ctx.fillText("Alternative Routes", legendX + legendRadius + 5, legendY + legendSpacing * 3 + 4)
     }
 
@@ -1340,13 +1336,13 @@ export default function EnhancedRouteMap({
     ctx.font = "bold 12px Arial"
     const methodWidth = ctx.measureText(methodText).width
 
-    ctx.fillStyle = "rgba(17, 0, 67, 0.8)"
+    ctx.fillStyle = "rgba(240, 240, 240, 0.8)" // Light gray background for indicator
     ctx.fillRect(canvas.width - methodWidth - 30, canvas.height - 40, methodWidth + 20, 25)
-    ctx.strokeStyle = "#42eedc"
+    ctx.strokeStyle = "#A0A0A0" // Medium gray border
     ctx.lineWidth = 1
     ctx.strokeRect(canvas.width - methodWidth - 30, canvas.height - 40, methodWidth + 20, 25)
 
-    ctx.fillStyle = "#f1f5f9"
+    ctx.fillStyle = "#1E1E1E" // Dark text
     ctx.textAlign = "left"
     ctx.fillText(methodText, canvas.width - methodWidth - 20, canvas.height - 25)
 
@@ -1380,19 +1376,19 @@ export default function EnhancedRouteMap({
 
       // Create gradient for info box
       const infoGradient = ctx.createLinearGradient(infoX - infoWidth, infoY - infoHeight, infoX, infoY)
-      infoGradient.addColorStop(0, "rgba(17, 0, 67, 0.9)")
-      infoGradient.addColorStop(1, "rgba(55, 0, 255, 0.9)")
+      infoGradient.addColorStop(0, "rgba(245, 245, 245, 0.9)") // Light gray
+      infoGradient.addColorStop(1, "rgba(220, 220, 220, 0.9)") // Slightly darker light gray
 
       ctx.fillStyle = infoGradient
       ctx.fill()
 
       // Add subtle border
-      ctx.strokeStyle = "#42eedc"
+      ctx.strokeStyle = "#A0A0A0" // Medium gray border
       ctx.lineWidth = 1
       ctx.stroke()
 
       // Draw point info
-      ctx.fillStyle = "#f1f5f9"
+      ctx.fillStyle = "#1E1E1E" // Dark text
       ctx.textAlign = "left"
       ctx.font = "bold 14px Arial"
       ctx.fillText(`Point ${point.id}: ${point.description}`, infoX - infoWidth + 10, infoY - infoHeight + 20)
@@ -1452,15 +1448,15 @@ export default function EnhancedRouteMap({
   }
 
   return (
-    <Card className="bg-[#1a0063] border-[#d4d4d8]">
+    <Card className="bg-[#F5F5F5] border-[#D1D5DB]"> {/* Light background, medium gray border */}
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-[#42eedc] text-xl">Visualized Route Map</CardTitle>
+        <CardTitle className="text-[#2c5282] text-xl">Visualized Route Map</CardTitle> {/* Dark blue title */}
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="icon"
             onClick={handleZoomIn}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#E5E7EB]/20" // Medium gray border, dark gray text, light gray hover
             title="Zoom In"
           >
             <ZoomIn className="h-4 w-4" />
@@ -1469,7 +1465,7 @@ export default function EnhancedRouteMap({
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#E5E7EB]/20"
             title="Zoom Out"
           >
             <ZoomOut className="h-4 w-4" />
@@ -1478,7 +1474,7 @@ export default function EnhancedRouteMap({
             variant="outline"
             size="icon"
             onClick={handleReset}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#E5E7EB]/20"
             title="Reset View"
           >
             <RotateCw className="h-4 w-4" />
@@ -1487,7 +1483,7 @@ export default function EnhancedRouteMap({
             variant="outline"
             size="icon"
             onClick={() => setShowControls(!showControls)}
-            className={`h-8 w-8 border-[#3700ff] ${showControls ? "bg-[#3700ff]/20 text-[#f1f5f9]" : "text-[#42eedc]"} hover:bg-[#3700ff]/20`}
+            className={`h-8 w-8 border-[#6B7280] ${showControls ? "bg-[#E5E7EB]/20 text-[#1F2937]" : "text-[#4B5563]"} hover:bg-[#E5E7EB]/20`} // Darker text when active
             title="Show Navigation Controls"
           >
             <MoveHorizontal className="h-4 w-4" />
@@ -1496,7 +1492,7 @@ export default function EnhancedRouteMap({
             variant="outline"
             size="icon"
             onClick={toggleAnimation}
-            className={`h-8 w-8 border-[#3700ff] ${isAnimating ? "bg-[#3700ff]/20 text-[#f1f5f9]" : "text-[#42eedc]"} hover:bg-[#3700ff]/20`}
+            className={`h-8 w-8 border-[#6B7280] ${isAnimating ? "bg-[#E5E7EB]/20 text-[#1F2937]" : "text-[#4B5563]"} hover:bg-[#E5E7EB]/20`}
             title={isAnimating ? "Stop Animation" : "Animate Route"}
           >
             {isAnimating ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -1505,7 +1501,7 @@ export default function EnhancedRouteMap({
             variant="outline"
             size="icon"
             onClick={toggleAlternativeRoutes}
-            className={`h-8 w-8 border-[#3700ff] ${showAlternativeRoutes ? "bg-[#3700ff]/20 text-[#f1f5f9]" : "text-[#42eedc]"} hover:bg-[#3700ff]/20`}
+            className={`h-8 w-8 border-[#6B7280] ${showAlternativeRoutes ? "bg-[#E5E7EB]/20 text-[#1F2937]" : "text-[#4B5563]"} hover:bg-[#E5E7EB]/20`}
             title={showAlternativeRoutes ? "Hide Alternative Routes" : "Show Alternative Routes"}
           >
             {showAlternativeRoutes ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -1515,17 +1511,17 @@ export default function EnhancedRouteMap({
       <CardContent>
         <div className="space-y-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-[#110043] border-[#3700ff] grid grid-cols-2 mb-4">
+            <TabsList className="bg-[#E5E7EB] border-[#6B7280] grid grid-cols-2 mb-4"> {/* Light gray background, medium gray border */}
               <TabsTrigger
                 value="map"
-                className="data-[state=active]:bg-[#3700ff] data-[state=active]:text-[#f1f5f9] text-[#42eedc]"
+                className="data-[state=active]:bg-[#4B5563] data-[state=active]:text-[#F9FAFB] text-[#374151]" // Dark gray active background, light text, medium-dark inactive text
               >
                 <Map className="h-4 w-4 mr-2" />
                 Map View
               </TabsTrigger>
               <TabsTrigger
                 value="settings"
-                className="data-[state=active]:bg-[#3700ff] data-[state=active]:text-[#f1f5f9] text-[#42eedc]"
+                className="data-[state=active]:bg-[#4B5563] data-[state=active]:text-[#F9FAFB] text-[#374151]"
               >
                 <Layers className="h-4 w-4 mr-2" />
                 Map Settings
@@ -1534,14 +1530,14 @@ export default function EnhancedRouteMap({
 
             <TabsContent value="map" className="mt-0">
               {showControls && (
-                <div className="bg-[#110043] p-3 rounded-md shadow-lg mb-4">
+                <div className="bg-[#E5E7EB] p-3 rounded-md shadow-lg mb-4"> {/* Light gray background */}
                   <div className="grid grid-cols-3 gap-2 max-w-[200px] mx-auto mb-2">
                     <div></div>
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => moveMap("up")}
-                      className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+                      className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#D1D5DB]/20" // Medium gray border, dark gray text, lighter gray hover
                     >
                       <ArrowUp className="h-4 w-4" />
                     </Button>
@@ -1550,18 +1546,18 @@ export default function EnhancedRouteMap({
                       variant="outline"
                       size="icon"
                       onClick={() => moveMap("left")}
-                      className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+                      className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#D1D5DB]/20"
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div className="flex items-center justify-center">
-                      <span className="text-[#f1f5f9] text-xs">Move</span>
+                      <span className="text-[#1F2937] text-xs">Move</span> {/* Dark text */}
                     </div>
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => moveMap("right")}
-                      className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+                      className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#D1D5DB]/20"
                     >
                       <ArrowRight className="h-4 w-4" />
                     </Button>
@@ -1570,14 +1566,14 @@ export default function EnhancedRouteMap({
                       variant="outline"
                       size="icon"
                       onClick={() => moveMap("down")}
-                      className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+                      className="h-8 w-8 border-[#6B7280] text-[#4B5563] hover:bg-[#D1D5DB]/20"
                     >
                       <ArrowDown className="h-4 w-4" />
                     </Button>
                     <div></div>
                   </div>
                   <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-[#f1f5f9] text-xs min-w-[40px]">Zoom:</span>
+                    <span className="text-[#1F2937] text-xs min-w-[40px]">Zoom:</span> {/* Dark text */}
                     <Slider
                       value={[zoom]}
                       min={0.5}
@@ -1586,11 +1582,11 @@ export default function EnhancedRouteMap({
                       onValueChange={(value) => setZoom(value[0])}
                       className="flex-1"
                     />
-                    <span className="text-[#f1f5f9] text-xs min-w-[40px] text-right">{zoom.toFixed(1)}x</span>
+                    <span className="text-[#1F2937] text-xs min-w-[40px] text-right">{zoom.toFixed(1)}x</span> {/* Dark text */}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-[#f1f5f9] text-xs block mb-1">Jump to point:</span>
+                      <span className="text-[#1F2937] text-xs block mb-1">Jump to point:</span> {/* Dark text */}
                       <div className="flex flex-wrap gap-1">
                         {points.map((point, index) => (
                           <Button
@@ -1598,15 +1594,15 @@ export default function EnhancedRouteMap({
                             variant="outline"
                             size="sm"
                             onClick={() => centerOnPoint(index)}
-                            className={`h-6 px-1.5 py-0 text-xs border-[#3700ff] ${
+                            className={`h-6 px-1.5 py-0 text-xs border-[#6B7280] ${
                               selectedPointIndex === index
-                                ? "bg-[#3700ff] text-[#f1f5f9]"
+                                ? "bg-[#4B5563] text-[#F9FAFB]" // Dark gray active background, light text
                                 : isStartPoint(index)
-                                  ? "text-[#a2ff00]"
+                                  ? "text-[#166534]" // Dark green text
                                   : isEndPoint(index)
-                                    ? "text-[#ff3f19]"
-                                    : "text-[#42eedc]"
-                            } hover:bg-[#3700ff]/20`}
+                                    ? "text-[#991B1B]" // Dark red text
+                                    : "text-[#3B82F6]" // Blue text (adjust as needed for light theme)
+                            } hover:bg-[#D1D5DB]/20`}
                           >
                             {point.id}
                           </Button>
@@ -1614,8 +1610,8 @@ export default function EnhancedRouteMap({
                       </div>
                     </div>
                     <div>
-                      <span className="text-[#f1f5f9] text-xs block mb-1">Keyboard shortcuts:</span>
-                      <div className="grid grid-cols-2 gap-1 text-[#d4d4d8] text-xs">
+                      <span className="text-[#1F2937] text-xs block mb-1">Keyboard shortcuts:</span> {/* Dark text */}
+                      <div className="grid grid-cols-2 gap-1 text-[#4B5563] text-xs"> {/* Dark gray text */}
                         <span>Arrow keys: Move</span>
                         <span>+/-: Zoom in/out</span>
                         <span>0: Reset view</span>
@@ -1631,10 +1627,10 @@ export default function EnhancedRouteMap({
               <div
                 className={`bg-gradient-to-b ${
                   mapStyle === "satellite"
-                    ? "from-[#0f172a] to-[#1e293b]"
+                    ? "from-[#E0E0E0] to-[#F5F5F5]" // Light grays for satellite
                     : mapStyle === "terrain"
-                      ? "from-[#064e3b] to-[#065f46]"
-                      : "from-[#0c0030] to-[#1a0063]"
+                      ? "from-[#C8E6C9] to-[#E8F5E9]" // Light greens for terrain
+                      : "from-[#E3F2FD] to-[#F3E5F5]" // Light blues/purples for standard (adjust as needed)
                 } p-3 rounded-md shadow-lg`}
                 ref={containerRef}
                 style={{ minHeight: "500px" }}
@@ -1658,18 +1654,18 @@ export default function EnhancedRouteMap({
             </TabsContent>
 
             <TabsContent value="settings" className="mt-0">
-              <div className="bg-[#110043] p-4 rounded-md">
+              <div className="bg-[#E5E7EB] p-4 rounded-md"> {/* Light gray background */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-[#f1f5f9] font-medium mb-2">Map Style</h3>
+                    <h3 className="text-[#1F2937] font-medium mb-2">Map Style</h3> {/* Dark text */}
                     <div className="grid grid-cols-3 gap-2">
                       <Button
                         variant={mapStyle === "standard" ? "default" : "outline"}
                         onClick={() => setMapStyle("standard")}
                         className={`${
                           mapStyle === "standard"
-                            ? "bg-[#3700ff] hover:bg-[#3700ff]/90"
-                            : "border-[#3700ff] text-[#42eedc]"
+                            ? "bg-[#4B5563] hover:bg-[#4B5563]/90 text-[#F9FAFB]" // Dark gray active background, light text
+                            : "border-[#6B7280] text-[#374151]" // Medium gray border, medium-dark text
                         }`}
                       >
                         Standard
@@ -1679,8 +1675,8 @@ export default function EnhancedRouteMap({
                         onClick={() => setMapStyle("satellite")}
                         className={`${
                           mapStyle === "satellite"
-                            ? "bg-[#3700ff] hover:bg-[#3700ff]/90"
-                            : "border-[#3700ff] text-[#42eedc]"
+                            ? "bg-[#4B5563] hover:bg-[#4B5563]/90 text-[#F9FAFB]"
+                            : "border-[#6B7280] text-[#374151]"
                         }`}
                       >
                         Satellite
@@ -1690,8 +1686,8 @@ export default function EnhancedRouteMap({
                         onClick={() => setMapStyle("terrain")}
                         className={`${
                           mapStyle === "terrain"
-                            ? "bg-[#3700ff] hover:bg-[#3700ff]/90"
-                            : "border-[#3700ff] text-[#42eedc]"
+                            ? "bg-[#4B5563] hover:bg-[#4B5563]/90 text-[#F9FAFB]"
+                            : "border-[#6B7280] text-[#374151]"
                         }`}
                       >
                         Terrain
@@ -1700,15 +1696,15 @@ export default function EnhancedRouteMap({
                   </div>
 
                   <div>
-                    <h3 className="text-[#f1f5f9] font-medium mb-2">Route Display</h3>
+                    <h3 className="text-[#1F2937] font-medium mb-2">Route Display</h3> {/* Dark text */}
                     <div className="flex items-center space-x-2 mb-2">
                       <Button
                         variant={showAlternativeRoutes ? "default" : "outline"}
                         onClick={toggleAlternativeRoutes}
                         className={`${
                           showAlternativeRoutes
-                            ? "bg-[#3700ff] hover:bg-[#3700ff]/90"
-                            : "border-[#3700ff] text-[#42eedc]"
+                            ? "bg-[#4B5563] hover:bg-[#4B5563]/90 text-[#F9FAFB]"
+                            : "border-[#6B7280] text-[#374151]"
                         }`}
                       >
                         {showAlternativeRoutes ? "Hide Alternative Routes" : "Show Alternative Routes"}
@@ -1716,32 +1712,32 @@ export default function EnhancedRouteMap({
                     </div>
 
                     <div className="mt-4">
-                      <h4 className="text-[#f1f5f9] text-sm mb-2">Route Colors Legend</h4>
+                      <h4 className="text-[#1F2937] text-sm mb-2">Route Colors Legend</h4> {/* Dark text */}
                       <div className="grid grid-cols-1 gap-2">
                         <div className="flex items-center">
-                          <div className="w-16 h-4 bg-gradient-to-r from-[#3700ff] via-[#42eedc] to-[#a2ff00] mr-2 rounded-full"></div>
-                          <span className="text-[#f1f5f9] text-sm">Nearest Neighbor (Default)</span>
+                          <div className="w-16 h-4 bg-gradient-to-r from-[#6B7280] via-[#9CA3AF] to-[#D1D5DB] mr-2 rounded-full"></div> {/* Grayscale gradient */}
+                          <span className="text-[#1F2937] text-sm">Nearest Neighbor (Default)</span> {/* Dark text */}
                         </div>
                         <div className="flex items-center">
-                          <div className="w-16 h-4 bg-gradient-to-r from-[#7928CA] via-[#FF0080] to-[#FF4D4D] mr-2 rounded-full"></div>
-                          <span className="text-[#f1f5f9] text-sm">Genetic Algorithm</span>
+                          <div className="w-16 h-4 bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#F43F5E] mr-2 rounded-full"></div> {/* Adjusted for light theme visibility */}
+                          <span className="text-[#1F2937] text-sm">Genetic Algorithm</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-16 h-4 bg-gradient-to-r from-[#004D40] via-[#00BFA5] to-[#64FFDA] mr-2 rounded-full"></div>
-                          <span className="text-[#f1f5f9] text-sm">Simulated Annealing</span>
+                          <div className="w-16 h-4 bg-gradient-to-r from-[#047857] via-[#059669] to-[#10B981] mr-2 rounded-full"></div> {/* Adjusted for light theme visibility */}
+                          <span className="text-[#1F2937] text-sm">Simulated Annealing</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-16 h-4 bg-gradient-to-r from-[#1A237E] via-[#3D5AFE] to-[#8C9EFF] mr-2 rounded-full"></div>
-                          <span className="text-[#f1f5f9] text-sm">A* Algorithm</span>
+                          <div className="w-16 h-4 bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#60A5FA] mr-2 rounded-full"></div> {/* Adjusted for light theme visibility */}
+                          <span className="text-[#1F2937] text-sm">A* Algorithm</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-[#f1f5f9] font-medium mb-2">Animation Controls</h3>
+                    <h3 className="text-[#1F2937] font-medium mb-2">Animation Controls</h3> {/* Dark text */}
                     <div className="flex space-x-2">
-                      <Button variant="outline" onClick={toggleAnimation} className="border-[#3700ff] text-[#42eedc]">
+                      <Button variant="outline" onClick={toggleAnimation} className="border-[#6B7280] text-[#374151]"> {/* Medium gray border, medium-dark text */}
                         {isAnimating ? (
                           <>
                             <Square className="h-4 w-4 mr-2" />
@@ -1761,36 +1757,36 @@ export default function EnhancedRouteMap({
             </TabsContent>
           </Tabs>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 bg-[#110043] p-3 rounded-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 bg-[#E5E7EB] p-3 rounded-md"> {/* Light gray background */}
             <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#c4ff65] to-[#a2ff00] mr-2 shadow-sm shadow-[#a2ff00]"></div>
-              <span className="text-[#f1f5f9]">Starting Point</span>
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#A7F3D0] to-[#6EE7B7] mr-2 shadow-sm shadow-[#6EE7B7]"></div> {/* Light green gradient */}
+              <span className="text-[#1F2937]">Starting Point</span> {/* Dark text */}
             </div>
             <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#ff6347] to-[#ff3f19] mr-2 shadow-sm shadow-[#ff3f19]"></div>
-              <span className="text-[#f1f5f9]">Ending Point</span>
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#FECACA] to-[#FCA5A5] mr-2 shadow-sm shadow-[#FCA5A5]"></div> {/* Light red gradient */}
+              <span className="text-[#1F2937]">Ending Point</span>
             </div>
             <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#7df9e9] to-[#42eedc] mr-2 shadow-sm shadow-[#42eedc]"></div>
-              <span className="text-[#f1f5f9]">Waypoints</span>
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#BFDBFE] to-[#93C5FD] mr-2 shadow-sm shadow-[#93C5FD]"></div> {/* Light blue gradient */}
+              <span className="text-[#1F2937]">Waypoints</span>
             </div>
             <div className="flex items-center">
-              <div className="h-2 w-8 bg-gradient-to-r from-[#3700ff] via-[#42eedc] to-[#a2ff00] mr-2 rounded-full"></div>
-              <span className="text-[#f1f5f9]">Optimal Route</span>
+              <div className="h-2 w-8 bg-gradient-to-r from-[#6B7280] via-[#9CA3AF] to-[#D1D5DB] mr-2 rounded-full"></div> {/* Grayscale gradient */}
+              <span className="text-[#1F2937]">Optimal Route</span>
             </div>
           </div>
 
-          <div className="text-sm text-[#f1f5f9] bg-[#110043] p-3 rounded-md">
+          <div className="text-sm text-[#1F2937] bg-[#E5E7EB] p-3 rounded-md"> {/* Dark text, light gray background */}
             <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#ff3f19] mr-2"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-[#F87171] mr-2"></span> {/* Light red indicator */}
               Click on points to select and view details
             </p>
             <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#a2ff00] mr-2"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-[#4ADE80] mr-2"></span> {/* Light green indicator */}
               Drag to pan the map, use buttons or mouse wheel to zoom
             </p>
             <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#42eedc] mr-2"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-[#60A5FA] mr-2"></span> {/* Light blue indicator */}
               Toggle alternative routes to compare different optimization methods
             </p>
           </div>

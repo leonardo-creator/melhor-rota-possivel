@@ -227,17 +227,17 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
     canvas.width = canvasSize.width
     canvas.height = canvasSize.height
 
-    // Create background gradient
+    // Create background gradient for light theme
     const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
-    bgGradient.addColorStop(0, "#0c0030") // Darker at top
-    bgGradient.addColorStop(1, "#1a0063") // Lighter at bottom
+    bgGradient.addColorStop(0, "#F3F4F6") // Light gray at top
+    bgGradient.addColorStop(1, "#E5E7EB") // Slightly darker light gray at bottom
 
     // Clear canvas with gradient background
     ctx.fillStyle = bgGradient
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Draw decorative pattern
-    ctx.strokeStyle = "rgba(55, 0, 255, 0.1)"
+    // Draw decorative pattern (subtle for light theme)
+    ctx.strokeStyle = "rgba(156, 163, 175, 0.1)" // Light gray with low opacity
     ctx.lineWidth = 1
 
     // Draw hexagonal grid pattern
@@ -267,7 +267,7 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       }
     }
 
-    // Draw glow effect for segments
+    // Draw glow effect for segments (subtle for light theme)
     route.segments.forEach((segment, i) => {
       const fromPos = getPointPosition(segment.fromIndex)
       const toPos = getPointPosition(segment.toIndex)
@@ -278,7 +278,7 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       ctx.moveTo(fromPos.x, fromPos.y)
       ctx.lineTo(toPos.x, toPos.y)
       ctx.lineWidth = 8
-      ctx.strokeStyle = "rgba(66, 238, 220, 0.2)"
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.1)" // Light blue glow
       ctx.stroke()
       ctx.restore()
     })
@@ -288,11 +288,11 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       const fromPos = getPointPosition(segment.fromIndex)
       const toPos = getPointPosition(segment.toIndex)
 
-      // Create gradient for the line
+      // Create gradient for the line (light theme appropriate)
       const gradient = ctx.createLinearGradient(fromPos.x, fromPos.y, toPos.x, toPos.y)
-      gradient.addColorStop(0, "#3700ff") // Start with blue
-      gradient.addColorStop(0.5, "#42eedc") // Transition to teal
-      gradient.addColorStop(1, "#a2ff00") // End with lime
+      gradient.addColorStop(0, "#3B82F6") // Blue
+      gradient.addColorStop(0.5, "#06B6D4") // Cyan
+      gradient.addColorStop(1, "#10B981") // Green
 
       // Draw line with gradient
       ctx.beginPath()
@@ -302,10 +302,10 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       // Highlight hovered segment
       if (hoveredSegment === i) {
         ctx.lineWidth = 6
-        ctx.strokeStyle = "#ff3f19" // Red for hover
+        ctx.strokeStyle = "#EF4444" // Red for hover
 
         // Add pulsing effect for hovered segment
-        ctx.shadowColor = "#ff3f19"
+        ctx.shadowColor = "#EF4444"
         ctx.shadowBlur = 10
       } else {
         ctx.lineWidth = 4
@@ -315,14 +315,14 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       ctx.stroke()
       ctx.shadowBlur = 0 // Reset shadow
 
-      // Draw animated dashes for direction
+      // Draw animated dashes for direction (darker for light theme)
       ctx.beginPath()
       ctx.setLineDash([5, 10])
       ctx.lineDashOffset = -((Date.now() / 100) % 15) // Animate dash
       ctx.moveTo(fromPos.x, fromPos.y)
       ctx.lineTo(toPos.x, toPos.y)
       ctx.lineWidth = 2
-      ctx.strokeStyle = "#f1f5f9"
+      ctx.strokeStyle = "#4B5563" // Dark gray dashes
       ctx.stroke()
       ctx.setLineDash([]) // Reset dash
 
@@ -360,23 +360,23 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       ctx.arcTo(-textWidth / 2 - 5, -textHeight / 2, -textWidth / 2 - 5 + cornerRadius, -textHeight / 2, cornerRadius)
       ctx.closePath()
 
-      // Create gradient for label background
+      // Create gradient for label background (light theme)
       const labelGradient = ctx.createLinearGradient(-textWidth / 2 - 5, 0, textWidth / 2 + 5, 0)
-      labelGradient.addColorStop(0, "rgba(17, 0, 67, 0.9)")
-      labelGradient.addColorStop(1, "rgba(55, 0, 255, 0.9)")
+      labelGradient.addColorStop(0, "rgba(229, 231, 235, 0.9)") // Light gray
+      labelGradient.addColorStop(1, "rgba(209, 213, 219, 0.9)") // Slightly darker light gray
 
       ctx.fillStyle = labelGradient
       ctx.fill()
 
-      // Add subtle border
-      ctx.strokeStyle = "#42eedc"
+      // Add subtle border (darker for light theme)
+      ctx.strokeStyle = "#9CA3AF" // Medium gray border
       ctx.lineWidth = 1
       ctx.stroke()
 
       // Draw text with glow effect - FIXED TEXT COLOR FOR READABILITY
-      ctx.shadowColor = hoveredSegment === i ? "#ff3f19" : "#42eedc"
+      ctx.shadowColor = hoveredSegment === i ? "#EF4444" : "#06B6D4" // Red or Cyan glow
       ctx.shadowBlur = 5
-      ctx.fillStyle = "#f1f5f9" // Always light text for readability
+      ctx.fillStyle = "#1F2937" // Dark text for readability on light background
       ctx.fillText(distanceText, 0, 0)
       ctx.shadowBlur = 0
 
@@ -390,63 +390,63 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       const isEnd = isEndPoint(i)
       const isHovered = hoveredPoint === i
 
-      // Draw outer glow
+      // Draw outer glow (subtle for light theme)
       ctx.beginPath()
       ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2)
 
       // Different glow colors based on point type
       if (isHovered) {
-        ctx.fillStyle = "rgba(255, 63, 25, 0.3)" // Red glow for hover
+        ctx.fillStyle = "rgba(239, 68, 68, 0.2)" // Red glow for hover
       } else if (isStart) {
-        ctx.fillStyle = "rgba(162, 255, 0, 0.3)" // Green glow for start
+        ctx.fillStyle = "rgba(16, 185, 129, 0.2)" // Green glow for start
       } else if (isEnd) {
-        ctx.fillStyle = "rgba(255, 63, 25, 0.3)" // Red glow for end
+        ctx.fillStyle = "rgba(239, 68, 68, 0.2)" // Red glow for end
       } else {
-        ctx.fillStyle = "rgba(66, 238, 220, 0.3)" // Teal glow for regular points
+        ctx.fillStyle = "rgba(6, 182, 212, 0.2)" // Cyan glow for regular points
       }
       ctx.fill()
 
-      // Draw point shadow
+      // Draw point shadow (lighter for light theme)
       ctx.beginPath()
-      ctx.arc(pos.x, pos.y + 3, 12, 0, Math.PI * 2)
-      ctx.fillStyle = "rgba(0, 0, 0, 0.4)"
+      ctx.arc(pos.x, pos.y + 2, 12, 0, Math.PI * 2) // Reduced offset for shadow
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)" // Lighter shadow
       ctx.fill()
 
       // Draw main circle with gradient
       ctx.beginPath()
       ctx.arc(pos.x, pos.y, 12, 0, Math.PI * 2)
 
-      // Create radial gradient for point
+      // Create radial gradient for point (light theme appropriate)
       const pointGradient = ctx.createRadialGradient(pos.x - 3, pos.y - 3, 0, pos.x, pos.y, 12)
 
       // Determine point colors
       if (isHovered) {
-        pointGradient.addColorStop(0, "#ff6347") // Lighter red
-        pointGradient.addColorStop(1, "#ff3f19") // Darker red
+        pointGradient.addColorStop(0, "#F87171") // Lighter red
+        pointGradient.addColorStop(1, "#EF4444") // Darker red
       } else if (isStart) {
-        pointGradient.addColorStop(0, "#c4ff65") // Lighter green
-        pointGradient.addColorStop(1, "#a2ff00") // Darker green
+        pointGradient.addColorStop(0, "#34D399") // Lighter green
+        pointGradient.addColorStop(1, "#10B981") // Darker green
       } else if (isEnd) {
-        pointGradient.addColorStop(0, "#ff6347") // Lighter red
-        pointGradient.addColorStop(1, "#ff3f19") // Darker red
+        pointGradient.addColorStop(0, "#F87171") // Lighter red
+        pointGradient.addColorStop(1, "#EF4444") // Darker red
       } else {
-        pointGradient.addColorStop(0, "#7df9e9") // Lighter teal
-        pointGradient.addColorStop(1, "#42eedc") // Darker teal
+        pointGradient.addColorStop(0, "#22D3EE") // Lighter cyan
+        pointGradient.addColorStop(1, "#06B6D4") // Darker cyan
       }
 
       ctx.fillStyle = pointGradient
       ctx.fill()
 
-      // Draw point border with glow
+      // Draw point border with glow (darker border for light theme)
       ctx.lineWidth = 2
-      ctx.strokeStyle = "#f1f5f9"
-      ctx.shadowColor = isHovered ? "#ff3f19" : isStart ? "#a2ff00" : isEnd ? "#ff3f19" : "#42eedc"
+      ctx.strokeStyle = "#1F2937" // Dark border
+      ctx.shadowColor = isHovered ? "#EF4444" : isStart ? "#10B981" : isEnd ? "#EF4444" : "#06B6D4"
       ctx.shadowBlur = 5
       ctx.stroke()
       ctx.shadowBlur = 0 // Reset shadow
 
       // Draw point ID - FIXED TEXT COLOR FOR READABILITY
-      ctx.fillStyle = "#110043" // Dark text on light background for point ID
+      ctx.fillStyle = "#FFFFFF" // White text on dark point
       ctx.font = "bold 12px Arial"
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
@@ -459,25 +459,25 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
 
         ctx.beginPath()
         ctx.arc(indicatorX, indicatorY, 10, 0, Math.PI * 2)
-        ctx.fillStyle = isStart ? "#a2ff00" : "#ff3f19"
+        ctx.fillStyle = isStart ? "#10B981" : "#EF4444" // Green or Red
         ctx.fill()
-        ctx.strokeStyle = "#f1f5f9"
+        ctx.strokeStyle = "#1F2937" // Dark border
         ctx.lineWidth = 1
         ctx.stroke()
 
-        ctx.fillStyle = "#110043" // Dark text for readability
+        ctx.fillStyle = "#FFFFFF" // White text for readability
         ctx.font = "bold 10px Arial"
         ctx.fillText(isStart ? "S" : "E", indicatorX, indicatorY)
       }
 
-      // Draw point description with enhanced styling
+      // Draw point description with enhanced styling (light theme)
       const description = point.description
       ctx.font = "12px Arial"
       const textWidth = ctx.measureText(description).width
       const textHeight = 20
       const cornerRadius = 5
 
-      // Draw rounded rectangle for description
+      // Draw rounded rectangle for description (light theme)
       ctx.beginPath()
       ctx.moveTo(pos.x - textWidth / 2 - 5 + cornerRadius, pos.y + 20)
       ctx.lineTo(pos.x + textWidth / 2 + 5 - cornerRadius, pos.y + 20)
@@ -514,232 +514,83 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       )
       ctx.closePath()
 
-      // Create gradient for description background
-      const descGradient = ctx.createLinearGradient(
+      // Create gradient for description background (light theme)
+      const descriptionGradient = ctx.createLinearGradient(
         pos.x - textWidth / 2 - 5,
         pos.y + 20,
         pos.x + textWidth / 2 + 5,
-        pos.y + 20,
+        pos.y + 20 + textHeight,
       )
-      descGradient.addColorStop(0, "rgba(17, 0, 67, 0.9)")
-      descGradient.addColorStop(1, "rgba(55, 0, 255, 0.9)")
+      descriptionGradient.addColorStop(0, "rgba(243, 244, 246, 0.9)") // Light gray
+      descriptionGradient.addColorStop(1, "rgba(229, 231, 235, 0.9)") // Slightly darker light gray
 
-      ctx.fillStyle = descGradient
+      ctx.fillStyle = descriptionGradient
       ctx.fill()
 
-      // Add subtle border
-      ctx.strokeStyle = isHovered ? "#ff3f19" : isStart ? "#a2ff00" : isEnd ? "#ff3f19" : "#42eedc"
+      // Add subtle border (darker for light theme)
+      ctx.strokeStyle = "#9CA3AF" // Medium gray border
       ctx.lineWidth = 1
       ctx.stroke()
 
-      // Draw description text - FIXED TEXT COLOR FOR READABILITY
-      ctx.fillStyle = "#f1f5f9" // Light text for readability
-      ctx.fillText(description, pos.x, pos.y + 30)
-
-      // Draw coordinates for hovered point with enhanced styling
-      if (isHovered) {
-        const coordText = `${point.latitude.toFixed(6)}, ${point.longitude.toFixed(6)}`
-        ctx.font = "11px Arial"
-        const coordWidth = ctx.measureText(coordText).width
-        const coordHeight = 20
-
-        // Draw rounded rectangle for coordinates
-        ctx.beginPath()
-        ctx.moveTo(pos.x - coordWidth / 2 - 5 + cornerRadius, pos.y - 40)
-        ctx.lineTo(pos.x + coordWidth / 2 + 5 - cornerRadius, pos.y - 40)
-        ctx.arcTo(
-          pos.x + coordWidth / 2 + 5,
-          pos.y - 40,
-          pos.x + coordWidth / 2 + 5,
-          pos.y - 40 + cornerRadius,
-          cornerRadius,
-        )
-        ctx.lineTo(pos.x + coordWidth / 2 + 5, pos.y - 40 + coordHeight - cornerRadius)
-        ctx.arcTo(
-          pos.x + coordWidth / 2 + 5,
-          pos.y - 40 + coordHeight,
-          pos.x + coordWidth / 2 + 5 - cornerRadius,
-          pos.y - 40 + coordHeight,
-          cornerRadius,
-        )
-        ctx.lineTo(pos.x - coordWidth / 2 - 5 + cornerRadius, pos.y - 40 + coordHeight)
-        ctx.arcTo(
-          pos.x - coordWidth / 2 - 5,
-          pos.y - 40 + coordHeight,
-          pos.x - coordWidth / 2 - 5,
-          pos.y - 40 + coordHeight - cornerRadius,
-          cornerRadius,
-        )
-        ctx.lineTo(pos.x - coordWidth / 2 - 5, pos.y - 40 + cornerRadius)
-        ctx.arcTo(
-          pos.x - coordWidth / 2 - 5,
-          pos.y - 40,
-          pos.x - coordWidth / 2 - 5 + cornerRadius,
-          pos.y - 40,
-          cornerRadius,
-        )
-        ctx.closePath()
-
-        // Create gradient for coordinates background
-        const coordGradient = ctx.createLinearGradient(
-          pos.x - coordWidth / 2 - 5,
-          pos.y - 40,
-          pos.x + coordWidth / 2 + 5,
-          pos.y - 40,
-        )
-        coordGradient.addColorStop(0, "rgba(255, 63, 25, 0.9)")
-        coordGradient.addColorStop(1, "rgba(255, 99, 71, 0.9)")
-
-        ctx.fillStyle = coordGradient
-        ctx.fill()
-
-        // Add subtle border
-        ctx.strokeStyle = "#f1f5f9"
-        ctx.lineWidth = 1
-        ctx.stroke()
-
-        // Draw coordinates text with glow - FIXED TEXT COLOR FOR READABILITY
-        ctx.shadowColor = "#ff3f19"
-        ctx.shadowBlur = 3
-        ctx.fillStyle = "#f1f5f9" // Light text for readability
-        ctx.fillText(coordText, pos.x, pos.y - 30)
-        ctx.shadowBlur = 0
-      }
+      // Draw description text (dark text for light theme)
+      ctx.fillStyle = "#1F2937" // Dark text
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillText(description, pos.x, pos.y + 20 + textHeight / 2)
     })
 
-    // Draw route order numbers with enhanced styling
-    route.path.forEach((pointIndex, i) => {
-      if (i < route.path.length - 1) {
-        const fromPos = getPointPosition(pointIndex)
-        const toPos = getPointPosition(route.path[i + 1])
+    // Draw compass with enhanced styling (light theme)
+    const compassX = canvas.width - 50
+    const compassY = 50
+    const compassRadius = 30
 
-        // Calculate position for order number (slightly offset from midpoint)
-        const midX = (fromPos.x + toPos.x) / 2
-        const midY = (fromPos.y + toPos.y) / 2
-
-        // Draw glowing circle for order number
-        ctx.beginPath()
-        ctx.arc(midX, midY, 14, 0, Math.PI * 2)
-
-        // Create radial gradient for order marker
-        const orderGradient = ctx.createRadialGradient(midX - 2, midY - 2, 0, midX, midY, 14)
-        orderGradient.addColorStop(0, "#5c29ff") // Lighter blue
-        orderGradient.addColorStop(1, "#3700ff") // Darker blue
-
-        ctx.fillStyle = orderGradient
-        ctx.fill()
-
-        // Add glow effect
-        ctx.shadowColor = "#3700ff"
-        ctx.shadowBlur = 8
-        ctx.strokeStyle = "#f1f5f9"
-        ctx.lineWidth = 1
-        ctx.stroke()
-        ctx.shadowBlur = 0
-
-        // Draw order number - FIXED TEXT COLOR FOR READABILITY
-        const orderText = `${i + 1}`
-        ctx.font = "bold 14px Arial"
-        ctx.fillStyle = "#f1f5f9" // Light text for readability
-        ctx.textAlign = "center"
-        ctx.textBaseline = "middle"
-        ctx.fillText(orderText, midX, midY)
-      }
-    })
-
-    // Draw enhanced compass
-    const compassRadius = 40
-    const compassX = canvas.width - compassRadius - 20
-    const compassY = compassRadius + 20
-
-    // Draw compass outer glow
-    ctx.beginPath()
-    ctx.arc(compassX, compassY, compassRadius + 5, 0, Math.PI * 2)
-    ctx.fillStyle = "rgba(66, 238, 220, 0.2)"
-    ctx.fill()
-
-    // Draw compass circle with gradient
+    // Draw compass background
     ctx.beginPath()
     ctx.arc(compassX, compassY, compassRadius, 0, Math.PI * 2)
-
-    // Create radial gradient for compass
-    const compassGradient = ctx.createRadialGradient(compassX - 10, compassY - 10, 0, compassX, compassY, compassRadius)
-    compassGradient.addColorStop(0, "#1a0063") // Lighter purple
-    compassGradient.addColorStop(1, "#110043") // Darker purple
-
-    ctx.fillStyle = compassGradient
+    ctx.fillStyle = "rgba(229, 231, 235, 0.8)" // Light gray background
     ctx.fill()
-
-    // Add subtle glow
-    ctx.shadowColor = "#42eedc"
-    ctx.shadowBlur = 10
-    ctx.strokeStyle = "#42eedc"
-    ctx.lineWidth = 2
+    ctx.strokeStyle = "#9CA3AF" // Medium gray border
+    ctx.lineWidth = 1
     ctx.stroke()
-    ctx.shadowBlur = 0
 
-    // Draw compass directions with enhanced styling - FIXED TEXT COLOR FOR READABILITY
-    ctx.font = "bold 14px Arial"
+    // Draw compass markings (N, E, S, W)
+    ctx.font = "bold 12px Arial"
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.textAlign = "center"
     ctx.textBaseline = "middle"
+    ctx.fillText("N", compassX, compassY - compassRadius * 0.7)
+    ctx.fillText("E", compassX + compassRadius * 0.7, compassY)
+    ctx.fillText("S", compassX, compassY + compassRadius * 0.7)
+    ctx.fillText("W", compassX - compassRadius * 0.7, compassY)
 
-    // North (special styling)
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
-    ctx.shadowColor = "#ff3f19"
-    ctx.shadowBlur = 5
-    ctx.fillText("N", compassX, compassY - compassRadius + 15)
-    ctx.shadowBlur = 0
-
-    // Other directions
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
-    ctx.fillText("S", compassX, compassY + compassRadius - 15)
-    ctx.fillText("E", compassX + compassRadius - 15, compassY)
-    ctx.fillText("W", compassX - compassRadius + 15, compassY)
-
-    // Draw compass rose lines
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI / 4) * i
-      const innerRadius = compassRadius * 0.3
-      const outerRadius = compassRadius * 0.9
-
-      ctx.beginPath()
-      ctx.moveTo(compassX + innerRadius * Math.cos(angle), compassY + innerRadius * Math.sin(angle))
-      ctx.lineTo(compassX + outerRadius * Math.cos(angle), compassY + outerRadius * Math.sin(angle))
-
-      // Alternate colors for compass rose lines
-      ctx.strokeStyle = i % 2 === 0 ? "#42eedc" : "#f1f5f9"
-      ctx.lineWidth = i % 2 === 0 ? 2 : 1
-      ctx.stroke()
-    }
-
-    // Draw compass needle with gradient
+    // Draw compass needle with gradient (darker for light theme)
     ctx.beginPath()
-    ctx.moveTo(compassX, compassY - compassRadius * 0.7)
-    ctx.lineTo(compassX - compassRadius * 0.2, compassY)
-    ctx.lineTo(compassX, compassY + compassRadius * 0.2)
-    ctx.lineTo(compassX + compassRadius * 0.2, compassY)
+    ctx.moveTo(compassX, compassY - compassRadius * 0.6)
+    ctx.lineTo(compassX - compassRadius * 0.15, compassY)
+    ctx.lineTo(compassX, compassY + compassRadius * 0.15)
+    ctx.lineTo(compassX + compassRadius * 0.15, compassY)
     ctx.closePath()
 
     // Create gradient for north-pointing needle
     const needleGradient = ctx.createLinearGradient(
       compassX,
-      compassY - compassRadius * 0.7,
+      compassY - compassRadius * 0.6,
       compassX,
-      compassY + compassRadius * 0.2,
+      compassY + compassRadius * 0.15,
     )
-    needleGradient.addColorStop(0, "#ff3f19") // Red at north tip
-    needleGradient.addColorStop(0.5, "#ff6347") // Lighter in middle
-    needleGradient.addColorStop(1, "#f1f5f9") // White at south end
+    needleGradient.addColorStop(0, "#4B5563") // Dark gray for North
+    needleGradient.addColorStop(0.5, "#6B7280") // Medium gray
+    needleGradient.addColorStop(1, "#9CA3AF") // Lighter gray
 
     ctx.fillStyle = needleGradient
     ctx.fill()
 
     // Add needle border
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    // Draw enhanced scale bar
+    // Draw enhanced scale bar (light theme)
     const scaleBarLength = 100
     const scaleBarX = 20
     const scaleBarY = canvas.height - 20
@@ -766,28 +617,28 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
     // Round to a nice number
     const roundedDistance = Math.round(scaleDistance * 10) / 10
 
-    // Draw scale bar background with gradient
+    // Draw scale bar background with gradient (light theme)
     ctx.beginPath()
     ctx.rect(scaleBarX, scaleBarY - scaleBarHeight / 2, scaleBarLength, scaleBarHeight)
 
     // Create gradient for scale bar
     const scaleGradient = ctx.createLinearGradient(scaleBarX, scaleBarY, scaleBarX + scaleBarLength, scaleBarY)
-    scaleGradient.addColorStop(0, "#3700ff") // Blue at start
-    scaleGradient.addColorStop(0.5, "#42eedc") // Teal in middle
-    scaleGradient.addColorStop(1, "#a2ff00") // Green at end
+    scaleGradient.addColorStop(0, "#D1D5DB") // Light gray
+    scaleGradient.addColorStop(0.5, "#E5E7EB") // Lighter gray
+    scaleGradient.addColorStop(1, "#9CA3AF") // Medium gray
 
     ctx.fillStyle = scaleGradient
     ctx.fill()
 
-    // Add subtle glow
-    ctx.shadowColor = "#42eedc"
+    // Add subtle glow (darker for light theme)
+    ctx.shadowColor = "#9CA3AF" // Medium gray glow
     ctx.shadowBlur = 5
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
     ctx.shadowBlur = 0
 
-    // Draw ticks with enhanced styling
+    // Draw ticks with enhanced styling (darker for light theme)
     ctx.beginPath()
     ctx.moveTo(scaleBarX, scaleBarY - 10)
     ctx.lineTo(scaleBarX, scaleBarY + 10)
@@ -795,27 +646,27 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
     ctx.lineTo(scaleBarX + scaleBarLength / 2, scaleBarY + 5)
     ctx.moveTo(scaleBarX + scaleBarLength, scaleBarY - 10)
     ctx.lineTo(scaleBarX + scaleBarLength, scaleBarY + 10)
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark ticks
     ctx.lineWidth = 2
     ctx.stroke()
 
-    // Draw scale text with enhanced styling - FIXED TEXT COLOR FOR READABILITY
+    // Draw scale text with enhanced styling (dark text for light theme)
     ctx.font = "bold 12px Arial"
     ctx.textAlign = "center"
-    ctx.shadowColor = "#42eedc"
+    ctx.shadowColor = "#9CA3AF" // Medium gray shadow
     ctx.shadowBlur = 3
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.fillText(`${roundedDistance.toFixed(1)} km`, scaleBarX + scaleBarLength / 2, scaleBarY - 15)
     ctx.shadowBlur = 0
 
-    // Draw subdivisions - FIXED TEXT COLOR FOR READABILITY
+    // Draw subdivisions (dark text for light theme)
     ctx.font = "10px Arial"
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.fillText("0", scaleBarX, scaleBarY + 15)
     ctx.fillText(`${(roundedDistance / 2).toFixed(1)}`, scaleBarX + scaleBarLength / 2, scaleBarY + 15)
     ctx.fillText(`${roundedDistance.toFixed(1)}`, scaleBarX + scaleBarLength, scaleBarY + 15)
 
-    // Draw legend for start and end points
+    // Draw legend for start and end points (light theme)
     const legendX = 20
     const legendY = 30
     const legendSpacing = 25
@@ -825,15 +676,15 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
     ctx.beginPath()
     ctx.arc(legendX, legendY, legendRadius, 0, Math.PI * 2)
     const startGradient = ctx.createRadialGradient(legendX - 2, legendY - 2, 0, legendX, legendY, legendRadius)
-    startGradient.addColorStop(0, "#c4ff65")
-    startGradient.addColorStop(1, "#a2ff00")
+    startGradient.addColorStop(0, "#6EE7B7") // Light green
+    startGradient.addColorStop(1, "#34D399") // Darker green
     ctx.fillStyle = startGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.textAlign = "left"
     ctx.font = "12px Arial"
     ctx.fillText("Start Point", legendX + legendRadius + 5, legendY + 4)
@@ -849,15 +700,15 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       legendY + legendSpacing,
       legendRadius,
     )
-    endGradient.addColorStop(0, "#ff6347")
-    endGradient.addColorStop(1, "#ff3f19")
+    endGradient.addColorStop(0, "#FCA5A5") // Light red
+    endGradient.addColorStop(1, "#F87171") // Darker red
     ctx.fillStyle = endGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.fillText("End Point", legendX + legendRadius + 5, legendY + legendSpacing + 4)
 
     // Waypoint legend
@@ -871,15 +722,15 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
       legendY + legendSpacing * 2,
       legendRadius,
     )
-    waypointGradient.addColorStop(0, "#7df9e9")
-    waypointGradient.addColorStop(1, "#42eedc")
+    waypointGradient.addColorStop(0, "#93C5FD") // Light blue
+    waypointGradient.addColorStop(1, "#60A5FA") // Darker blue
     ctx.fillStyle = waypointGradient
     ctx.fill()
-    ctx.strokeStyle = "#f1f5f9"
+    ctx.strokeStyle = "#1F2937" // Dark border
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = "#f1f5f9" // Light text for readability
+    ctx.fillStyle = "#1F2937" // Dark text
     ctx.fillText("Waypoint", legendX + legendRadius + 5, legendY + legendSpacing * 2 + 4)
   }, [route, points, zoom, offset, hoveredSegment, hoveredPoint, startPointId, endPointId, canvasSize, isInitialized])
 
@@ -898,15 +749,16 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
   }
 
   return (
-    <Card className="bg-[#1a0063] border-[#d4d4d8]">
+    <Card className="bg-card border-border">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-[#42eedc] text-xl">Visualized Route Map</CardTitle>
+        <CardTitle className="text-primary text-xl">Visualized Route Map</CardTitle>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="icon"
             onClick={handleZoomIn}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-primary text-primary hover:bg-accent"
+            title="Zoom In"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -914,7 +766,8 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-primary text-primary hover:bg-accent"
+            title="Zoom Out"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -922,65 +775,31 @@ export default function RouteMap({ route, points, startPointId, endPointId }: Ro
             variant="outline"
             size="icon"
             onClick={handleReset}
-            className="h-8 w-8 border-[#3700ff] text-[#42eedc] hover:bg-[#3700ff]/20"
+            className="h-8 w-8 border-primary text-primary hover:bg-accent"
+            title="Reset View"
           >
             <RotateCw className="h-4 w-4" />
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div
-            className="bg-gradient-to-b from-[#0c0030] to-[#1a0063] p-3 rounded-md shadow-lg"
-            ref={containerRef}
-            style={{ minHeight: "500px" }}
-          >
-            {isInitialized && (
-              <canvas
-                ref={canvasRef}
-                className="w-full h-[500px] rounded-md cursor-grab"
-                style={{ touchAction: "none" }} /* Prevents browser handling of touch events */
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseLeave}
-              />
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 bg-[#110043] p-3 rounded-md">
-            <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#c4ff65] to-[#a2ff00] mr-2 shadow-sm shadow-[#a2ff00]"></div>
-              <span className="text-[#f1f5f9]">Starting Point</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#ff6347] to-[#ff3f19] mr-2 shadow-sm shadow-[#ff3f19]"></div>
-              <span className="text-[#f1f5f9]">Ending Point</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#7df9e9] to-[#42eedc] mr-2 shadow-sm shadow-[#42eedc]"></div>
-              <span className="text-[#f1f5f9]">Waypoints</span>
-            </div>
-            <div className="flex items-center">
-              <div className="h-2 w-8 bg-gradient-to-r from-[#3700ff] via-[#42eedc] to-[#a2ff00] mr-2 rounded-full"></div>
-              <span className="text-[#f1f5f9]">Route Path</span>
-            </div>
-          </div>
-
-          <div className="text-sm text-[#f1f5f9] bg-[#110043] p-3 rounded-md">
-            <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#ff3f19] mr-2"></span>
-              Hover over points to see coordinates
-            </p>
-            <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#a2ff00] mr-2"></span>
-              Hover over lines to highlight route segments
-            </p>
-            <p className="flex items-center">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#42eedc] mr-2"></span>
-              Drag to pan the map, use buttons to zoom
-            </p>
-          </div>
+        <div
+          ref={containerRef}
+          className="map-container bg-background p-3 rounded-md shadow-lg"
+          style={{ minHeight: "500px" }} // Ensure this matches canvas height or is responsive
+        >
+          {isInitialized && (
+            <canvas
+              ref={canvasRef}
+              className="w-full h-[500px] rounded-md cursor-grab"
+              style={{ touchAction: "none" }} /* Prevents browser handling of touch events */
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              // Add touch event handlers if needed for mobile
+            />
+          )}
         </div>
       </CardContent>
     </Card>
