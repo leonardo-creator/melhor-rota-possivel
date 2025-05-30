@@ -12,12 +12,14 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import RouteDisplay from "@/components/route-display"
-import EnhancedRouteMap from "@/components/enhanced-route-map"
+import SimpleRouteMap from "@/components/simple-route-map"
+import MapPerformanceComparison from "@/components/map-performance-comparison"
 import { parseRouteData } from "@/lib/route-utils"
 import { nearestNeighborAlgorithm, twoOptAlgorithm, geneticAlgorithm, calculateBestRoute } from "@/lib/route-algorithms"
 import { exportToEnhancedXLSX } from "@/lib/enhanced-export-utils"
 import type { RoutePoint, CalculatedRoute } from "@/lib/types"
-import { Download, BarChart3, Map } from "lucide-react"
+import { Download, BarChart3, Map, FileText, CheckCircle } from "lucide-react"
+import ExcelImport from "@/components/excel-import"
 
 export default function MultiRouteOptimizer() {
   const [routeData, setRouteData] = useState("")
@@ -38,14 +40,47 @@ export default function MultiRouteOptimizer() {
   const [startPointId, setStartPointId] = useState<string>("auto")
   const [endPointId, setEndPointId] = useState<string>("auto")
   const [activeTab, setActiveTab] = useState<string>("map")
+  const [importMode, setImportMode] = useState<"manual" | "excel">("manual")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleExcelImportSuccess = (importedPoints: RoutePoint[]) => {
+    setPoints(importedPoints)
+    setError("")
+    
+    // Convert points to route data format for display in textarea
+    const routeDataText = importedPoints
+      .map(point => `${point.id} ${point.description} ${point.latitude} ${point.longitude}`)
+      .join('\n')
+    setRouteData(routeDataText)
+    
+    // Reset route calculations since we have new data
+    setCalculatedRoutes({
+      nearestNeighbor: null,
+      twoOpt: null,
+      genetic: null,
+      best: null,
+    })
+  }
+
+  const handleExcelImportError = (errorMessage: string) => {
+    setError(errorMessage)
+  }
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault()
+    }
     setError("")
 
     try {
-      // Parse the route data
-      const routePoints = parseRouteData(routeData)
+      let routePoints: RoutePoint[]
+      
+      // If we already have points from Excel import, use them
+      if (points.length > 0 && importMode === "excel") {
+        routePoints = points
+      } else {
+        // Parse the route data from textarea
+        routePoints = parseRouteData(routeData)
+      }
 
       if (routePoints.length < 2) {
         setError("Por favor, insira pelo menos dois pontos de rota para calcular uma rota")
@@ -133,132 +168,186 @@ export default function MultiRouteOptimizer() {
           <CardTitle className="text-primary">Otimizador de Rota Avançado</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="routeData" className="block mb-2 text-foreground">
-                Dados de rota (um ponto por linha, formato: id descrição latitude longitude)
-              </label>
-              <Textarea
-                id="routeData"
-                value={routeData}
-                onChange={(e) => setRouteData(e.target.value)}
-                placeholder="1 Escritório -11.684651 -49.85554651&#10;2 Armazém -11.4651 -49.854651"
-                className="bg-input border-border text-foreground min-h-[150px] font-mono"
+          {/* Input Mode Selection */}
+          <Tabs value={importMode} onValueChange={(value) => setImportMode(value as "manual" | "excel")} className="w-full mb-6">
+            <TabsList className="bg-card border-border grid w-full grid-cols-2">
+              <TabsTrigger 
+                value="manual" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
+              >
+                <Map className="h-4 w-4 mr-2" />
+                Inserção Manual
+              </TabsTrigger>
+              <TabsTrigger 
+                value="excel" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Importar Excel/CSV
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="manual" className="mt-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="routeData" className="block mb-2 text-foreground">
+                    Dados de rota (um ponto por linha, formato: id descrição latitude longitude)
+                  </label>
+                  <Textarea
+                    id="routeData"
+                    value={routeData}
+                    onChange={(e) => setRouteData(e.target.value)}
+                    placeholder="1 Escritório -11.684651 -49.85554651&#10;2 Armazém -11.4651 -49.854651"
+                    className="bg-input border-border text-foreground min-h-[150px] font-mono"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                    Calcular Rotas Ótimas
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAddExample}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-accent"
+                  >
+                    Carregar Dados de Exemplo
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="excel" className="mt-4">
+              <ExcelImport 
+                onImportSuccess={handleExcelImportSuccess}
+                onImportError={handleExcelImportError}
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="startPoint" className="text-foreground">
-                  Ponto de Início (opcional)
-                </Label>
-                <Select value={startPointId} onValueChange={setStartPointId}>
-                  <SelectTrigger id="startPoint" className="bg-input border-border text-foreground">
-                    <SelectValue placeholder="Selecione o ponto de início" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border text-popover-foreground">
-                    <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
-                      Automático (decidido pelo algoritmo)
-                    </SelectItem>
-                    {points.map((point) => (
-                      <SelectItem
-                        key={`start-${point.id}`}
-                        value={point.id.toString()}
-                        className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
-                      >
-                        {point.id}: {point.description}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="endPoint" className="text-foreground">
-                  Ponto Final (opcional)
-                </Label>
-                <Select value={endPointId} onValueChange={setEndPointId}>
-                  <SelectTrigger id="endPoint" className="bg-input border-border text-foreground">
-                    <SelectValue placeholder="Selecione o ponto final" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border text-popover-foreground">
-                    <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
-                      Automático (decidido pelo algoritmo)
-                    </SelectItem>
-                    {points.map((point) => (
-                      <SelectItem
-                        key={`end-${point.id}`}
-                        value={point.id.toString()}
-                        className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
-                      >
-                        {point.id}: {point.description}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="bg-card p-4 rounded-md border border-border">
-              <Label className="text-foreground mb-2 block">Algoritmo de Otimização</Label>
-              <RadioGroup
-                value={selectedAlgorithm}
-                onValueChange={setSelectedAlgorithm}
-                className="flex flex-wrap gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="best" id="best" className="text-success" />
-                  <Label htmlFor="best" className="text-foreground">
-                    Melhor Resultado
-                  </Label>
+              
+              {points.length > 0 && (
+                <div className="mt-4">
+                  <Alert className="bg-primary/10 border-primary text-primary-foreground">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      {points.length} pontos importados com sucesso! Clique em "Calcular Rotas Ótimas" abaixo para prosseguir.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <Button 
+                    onClick={() => handleSubmit()} 
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground mt-4"
+                  >
+                    Calcular Rotas Ótimas
+                  </Button>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="nearestNeighbor" id="nearestNeighbor" className="text-accent-foreground" />
-                  <Label htmlFor="nearestNeighbor" className="text-foreground">
-                    Vizinho Mais Próximo
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="twoOpt" id="twoOpt" className="text-accent-foreground" />
-                  <Label htmlFor="twoOpt" className="text-foreground">
-                    2-Opt
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="genetic" id="genetic" className="text-accent-foreground" />
-                  <Label htmlFor="genetic" className="text-foreground">
-                    Algoritmo Genético
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                Calcular Rotas Ótimas
-              </Button>
-              <Button
-                type="button"
-                onClick={handleAddExample}
-                variant="outline"
-                className="border-primary text-primary hover:bg-accent"
-              >
-                Carregar Dados de Exemplo
-              </Button>
-
-              {selectedRoute && points.length > 0 && (
-                <Button
-                  type="button"
-                  onClick={handleExportData}
-                  variant="outline"
-                  className="border-success text-success hover:bg-success/10"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Exportar Rota
-                </Button>
               )}
+            </TabsContent>
+          </Tabs>
+
+          {/* Common Configuration Options */}
+          {points.length > 0 && (
+            <div className="space-y-4 pt-4 border-t border-border">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="startPoint" className="text-foreground">
+                    Ponto de Início (opcional)
+                  </Label>
+                  <Select value={startPointId} onValueChange={setStartPointId}>
+                    <SelectTrigger id="startPoint" className="bg-input border-border text-foreground">
+                      <SelectValue placeholder="Selecione o ponto de início" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border-border text-popover-foreground">
+                      <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
+                        Automático (decidido pelo algoritmo)
+                      </SelectItem>
+                      {points.map((point) => (
+                        <SelectItem
+                          key={`start-${point.id}`}
+                          value={point.id.toString()}
+                          className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          {point.id}: {point.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="endPoint" className="text-foreground">
+                    Ponto Final (opcional)
+                  </Label>
+                  <Select value={endPointId} onValueChange={setEndPointId}>
+                    <SelectTrigger id="endPoint" className="bg-input border-border text-foreground">
+                      <SelectValue placeholder="Selecione o ponto final" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border-border text-popover-foreground">
+                      <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
+                        Automático (decidido pelo algoritmo)
+                      </SelectItem>
+                      {points.map((point) => (
+                        <SelectItem
+                          key={`end-${point.id}`}
+                          value={point.id.toString()}
+                          className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          {point.id}: {point.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="bg-card p-4 rounded-md border border-border">
+                <Label className="text-foreground mb-2 block">Algoritmo de Otimização</Label>
+                <RadioGroup
+                  value={selectedAlgorithm}
+                  onValueChange={setSelectedAlgorithm}
+                  className="flex flex-wrap gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="best" id="best" className="text-success" />
+                    <Label htmlFor="best" className="text-foreground">
+                      Melhor Resultado
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="nearestNeighbor" id="nearestNeighbor" className="text-accent-foreground" />
+                    <Label htmlFor="nearestNeighbor" className="text-foreground">
+                      Vizinho Mais Próximo
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="twoOpt" id="twoOpt" className="text-accent-foreground" />
+                    <Label htmlFor="twoOpt" className="text-foreground">
+                      2-Opt
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="genetic" id="genetic" className="text-accent-foreground" />
+                    <Label htmlFor="genetic" className="text-foreground">
+                      Algoritmo Genético
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {selectedRoute && points.length > 0 && (
+                  <Button
+                    type="button"
+                    onClick={handleExportData}
+                    variant="outline"
+                    className="border-success text-success hover:bg-success/10"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Exportar Rota
+                  </Button>
+                )}
+              </div>
             </div>
-          </form>
+          )}
         </CardContent>
       </Card>
 
@@ -269,9 +358,8 @@ export default function MultiRouteOptimizer() {
       )}
 
       {selectedRoute && points.length > 0 && (
-        <div className="space-y-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-card border-border grid w-full grid-cols-2">
+        <div className="space-y-6">          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-card border-border grid w-full grid-cols-3">
               <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground">
                 <Map className="h-4 w-4 mr-2" />
                 Visão de Mapa
@@ -283,12 +371,17 @@ export default function MultiRouteOptimizer() {
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Comparação de Algoritmos
               </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="map" className="mt-4">
+              <TabsTrigger
+                value="performance"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Performance do Mapa
+              </TabsTrigger>
+            </TabsList><TabsContent value="map" className="mt-4">
               <RouteDisplay route={selectedRoute} points={points} />
               <div className="mt-6">
-                <EnhancedRouteMap
+                <SimpleRouteMap
                   route={selectedRoute}
                   points={points}
                   startPointId={startPointId !== "auto" ? Number.parseInt(startPointId) : undefined}
@@ -507,9 +600,17 @@ export default function MultiRouteOptimizer() {
                         </p>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
+                  </div>                </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="performance" className="mt-4">
+              <MapPerformanceComparison
+                route={selectedRoute}
+                points={points}
+                startPointId={startPointId !== "auto" ? Number.parseInt(startPointId) : undefined}
+                endPointId={endPointId !== "auto" ? Number.parseInt(endPointId) : undefined}
+              />
             </TabsContent>
           </Tabs>
         </div>
