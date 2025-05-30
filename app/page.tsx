@@ -21,7 +21,7 @@ export default function Home() {
           <h1 className="text-4xl font-bold mb-4 text-primary">
             🗺️ Melhor Rota
           </h1>
-          <h2 className="text-2xl font-semibold mb-2 text-accent text-[#110043]">
+          <h2 className="text-2xl font-semibold mb-2 text-[#110043]">
             Otimizador de Rota Avançado
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
