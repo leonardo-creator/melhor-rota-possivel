@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,15 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import RouteDisplay from "@/components/route-display"
-import SimpleRouteMap from "@/components/simple-route-map"
 import MapPerformanceComparison from "@/components/map-performance-comparison"
 import { parseRouteData } from "@/lib/route-utils"
 import { nearestNeighborAlgorithm, twoOptAlgorithm, geneticAlgorithm, calculateBestRoute } from "@/lib/route-algorithms"
 import { exportToEnhancedXLSX } from "@/lib/enhanced-export-utils"
 import type { RoutePoint, CalculatedRoute } from "@/lib/types"
-import { Download, BarChart3, Map, FileText, CheckCircle } from "lucide-react"
+import { Download, Map, FileText, CheckCircle } from "lucide-react"
 import ExcelImport from "@/components/excel-import"
+import LeafletMapWrapper from "@/components/LeafletMapWrapper"
 
 export default function MultiRouteOptimizer() {
   const [routeData, setRouteData] = useState("")
@@ -39,7 +37,6 @@ export default function MultiRouteOptimizer() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>("best")
   const [startPointId, setStartPointId] = useState<string>("auto")
   const [endPointId, setEndPointId] = useState<string>("auto")
-  const [activeTab, setActiveTab] = useState<string>("map")
   const [importMode, setImportMode] = useState<"manual" | "excel">("manual")
 
   const handleExcelImportSuccess = (importedPoints: RoutePoint[]) => {
@@ -162,459 +159,185 @@ export default function MultiRouteOptimizer() {
   const selectedRoute = getSelectedRoute()
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="text-primary">Otimizador de Rota Avançado</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Input Mode Selection */}
-          <Tabs value={importMode} onValueChange={(value) => setImportMode(value as "manual" | "excel")} className="w-full mb-6">
-            <TabsList className="bg-card border-border grid w-full grid-cols-2">
-              <TabsTrigger 
-                value="manual" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
-              >
-                <Map className="h-4 w-4 mr-2" />
-                Inserção Manual
-              </TabsTrigger>
-              <TabsTrigger 
-                value="excel" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                Importar Excel/CSV
-              </TabsTrigger>
-            </TabsList>
+    <div className="flex flex-col lg:flex-row h-[85vh] gap-6">
+      {/* Sidebar - Controls & Inputs */}
+      <div className="w-full lg:w-[400px] flex flex-col gap-4 h-full overflow-hidden">
+        <Card className="flex-1 flex flex-col bg-card border-border shadow-sm overflow-hidden">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-xl">Configuração da Rota</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-y-auto space-y-4 p-4 scrollbar-thin scrollbar-thumb-primary/10">
+            
+            {/* Input Mode Selection */}
+            <Tabs value={importMode} onValueChange={(value) => setImportMode(value as "manual" | "excel")} className="w-full">
+              <TabsList className="bg-muted grid w-full grid-cols-2">
+                <TabsTrigger value="manual" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow text-muted-foreground transition-all">
+                  <Map className="h-4 w-4 mr-2" /> Manual
+                </TabsTrigger>
+                <TabsTrigger value="excel" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow text-muted-foreground transition-all">
+                  <FileText className="h-4 w-4 mr-2" /> Excel/CSV
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="manual" className="mt-4">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="routeData" className="block mb-2 text-foreground">
-                    Dados de rota (um ponto por linha, formato: id descrição latitude longitude)
-                  </label>
-                  <Textarea
-                    id="routeData"
-                    value={routeData}
-                    onChange={(e) => setRouteData(e.target.value)}
-                    placeholder="1 Escritório -11.684651 -49.85554651&#10;2 Armazém -11.4651 -49.854651"
-                    className="bg-input border-border text-foreground min-h-[150px] font-mono"
-                  />
+              <TabsContent value="manual" className="mt-4 space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="routeData" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      Pontos da Rota
+                    </Label>
+                    <Textarea
+                      id="routeData"
+                      value={routeData}
+                      onChange={(e) => setRouteData(e.target.value)}
+                      placeholder={`1 Escritório -11.68 -49.85\n2 Cliente A -11.46 -49.85`}
+                      className="bg-muted/50 border-transparent focus:border-primary text-foreground min-h-[120px] font-mono text-sm mt-1 mb-2 resize-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white shadow-md transition-all active:scale-95">
+                      Calcular
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleAddExample}
+                      variant="outline"
+                      className="w-full border-primary/20 hover:bg-primary/5 text-primary"
+                    >
+                      Exemplo
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="excel" className="mt-4">
+                <ExcelImport 
+                  onImportSuccess={handleExcelImportSuccess}
+                  onImportError={handleExcelImportError}
+                />
+                {points.length > 0 && (
+                   <div className="mt-4 space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 p-2 rounded border border-green-100 dark:bg-green-900/20 dark:border-green-900/50">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>{points.length} pontos carregados</span>
+                      </div>
+                      <Button onClick={() => handleSubmit()} className="w-full">Calcular Rota</Button>
+                   </div>
+                )}
+              </TabsContent>
+            </Tabs>
+
+            {/* Global Errors */}
+            {error && (
+              <Alert variant="destructive" className="py-2 text-sm animate-in fade-in slide-in-from-top-2">
+                 <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Algorithm & Configuration (Only show if points exist) */}
+            {points.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-dashed">
+                <div className="grid grid-cols-2 gap-3">
+                   <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Início</Label>
+                      <Select value={startPointId} onValueChange={setStartPointId}>
+                        <SelectTrigger className="h-9 text-sm">
+                           <SelectValue placeholder="Auto" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="auto">Automático</SelectItem>
+                          {points.map(p => (
+                            <SelectItem key={`s-${p.id}`} value={p.id.toString()}>{p.id}: {p.description}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                   </div>
+                   <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Fim</Label>
+                      <Select value={endPointId} onValueChange={setEndPointId}>
+                        <SelectTrigger className="h-9 text-sm">
+                           <SelectValue placeholder="Auto" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="auto">Automático</SelectItem>
+                          {points.map(p => (
+                             <SelectItem key={`e-${p.id}`} value={p.id.toString()}>{p.id}: {p.description}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                    Calcular Rotas Ótimas
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleAddExample}
-                    variant="outline"
-                    className="border-primary text-primary hover:bg-accent"
-                  >
-                    Carregar Dados de Exemplo
-                  </Button>
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Algoritmo</Label>
+                  <Select value={selectedAlgorithm} onValueChange={setSelectedAlgorithm}>
+                    <SelectTrigger className="h-9 text-sm">
+                       <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                       <SelectItem value="best">🏅 Melhor Resultado (Automático)</SelectItem>
+                       <SelectItem value="nearestNeighbor">⚡ Vizinho Mais Próximo (Rápido)</SelectItem>
+                       <SelectItem value="twoOpt">🔄 2-Opt (Equilibrado)</SelectItem>
+                       <SelectItem value="genetic">🧬 Genético (Complexo)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="excel" className="mt-4">
-              <ExcelImport 
-                onImportSuccess={handleExcelImportSuccess}
-                onImportError={handleExcelImportError}
-              />
-              
-              {points.length > 0 && (
-                <div className="mt-4">
-                  <Alert className="bg-primary/10 border-primary text-primary-foreground">
-                    <CheckCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      {points.length} pontos importados com sucesso! Clique em "Calcular Rotas Ótimas" abaixo para prosseguir.
-                    </AlertDescription>
-                  </Alert>
-                  
+                
+                {selectedRoute && (
                   <Button 
-                    onClick={() => handleSubmit()} 
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground mt-4"
-                  >
-                    Calcular Rotas Ótimas
-                  </Button>
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-
-          {/* Common Configuration Options */}
-          {points.length > 0 && (
-            <div className="space-y-4 pt-4 border-t border-border">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="startPoint" className="text-foreground">
-                    Ponto de Início (opcional)
-                  </Label>
-                  <Select value={startPointId} onValueChange={setStartPointId}>
-                    <SelectTrigger id="startPoint" className="bg-input border-border text-foreground">
-                      <SelectValue placeholder="Selecione o ponto de início" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover border-border text-popover-foreground">
-                      <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
-                        Automático (decidido pelo algoritmo)
-                      </SelectItem>
-                      {points.map((point) => (
-                        <SelectItem
-                          key={`start-${point.id}`}
-                          value={point.id.toString()}
-                          className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          {point.id}: {point.description}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="endPoint" className="text-foreground">
-                    Ponto Final (opcional)
-                  </Label>
-                  <Select value={endPointId} onValueChange={setEndPointId}>
-                    <SelectTrigger id="endPoint" className="bg-input border-border text-foreground">
-                      <SelectValue placeholder="Selecione o ponto final" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover border-border text-popover-foreground">
-                      <SelectItem value="auto" className="text-popover-foreground focus:bg-accent focus:text-accent-foreground">
-                        Automático (decidido pelo algoritmo)
-                      </SelectItem>
-                      {points.map((point) => (
-                        <SelectItem
-                          key={`end-${point.id}`}
-                          value={point.id.toString()}
-                          className="text-popover-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          {point.id}: {point.description}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="bg-card p-4 rounded-md border border-border">
-                <Label className="text-foreground mb-2 block">Algoritmo de Otimização</Label>
-                <RadioGroup
-                  value={selectedAlgorithm}
-                  onValueChange={setSelectedAlgorithm}
-                  className="flex flex-wrap gap-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="best" id="best" className="text-success" />
-                    <Label htmlFor="best" className="text-foreground">
-                      Melhor Resultado
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="nearestNeighbor" id="nearestNeighbor" className="text-accent-foreground" />
-                    <Label htmlFor="nearestNeighbor" className="text-foreground">
-                      Vizinho Mais Próximo
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="twoOpt" id="twoOpt" className="text-accent-foreground" />
-                    <Label htmlFor="twoOpt" className="text-foreground">
-                      2-Opt
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="genetic" id="genetic" className="text-accent-foreground" />
-                    <Label htmlFor="genetic" className="text-foreground">
-                      Algoritmo Genético
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {selectedRoute && points.length > 0 && (
-                  <Button
-                    type="button"
+                    variant="ghost" 
+                    className="w-full text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 h-8 text-sm"
                     onClick={handleExportData}
-                    variant="outline"
-                    className="border-success text-success hover:bg-success/10"
                   >
-                    <Download className="mr-2 h-4 w-4" />
-                    Exportar Rota
+                    <Download className="h-3 w-3 mr-2" /> Exportar Rota
                   </Button>
                 )}
               </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {error && (
-        <Alert className="bg-destructive/10 border-destructive text-destructive-foreground">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {selectedRoute && points.length > 0 && (
-        <div className="space-y-6">          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-card border-border grid w-full grid-cols-3">
-              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground">
-                <Map className="h-4 w-4 mr-2" />
-                Visão de Mapa
-              </TabsTrigger>
-              <TabsTrigger
-                value="comparison"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
-              >
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Comparação de Algoritmos
-              </TabsTrigger>
-              <TabsTrigger
-                value="performance"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground"
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Performance do Mapa
-              </TabsTrigger>
-            </TabsList><TabsContent value="map" className="mt-4">
-              <RouteDisplay route={selectedRoute} points={points} />
-              <div className="mt-6">
-                <SimpleRouteMap
-                  route={selectedRoute}
-                  points={points}
-                  startPointId={startPointId !== "auto" ? Number.parseInt(startPointId) : undefined}
-                  endPointId={endPointId !== "auto" ? Number.parseInt(endPointId) : undefined}
-                />
+            )}
+             
+            {/* Results Summary Mini-Card */}
+             {selectedRoute && (
+              <div className="bg-primary/5 rounded-lg p-3 border border-primary/10 mt-4 space-y-2">
+                <h4 className="font-semibold text-primary text-sm flex items-center justify-between">
+                   <span>Resumo da Rota</span>
+                   <span className="text-xs bg-background px-2 py-0.5 rounded shadow-sm border">{selectedRoute.path.length} pontos</span>
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <span className="text-xs text-muted-foreground block">Distância Total</span>
+                      <span className="text-lg font-bold text-foreground">{selectedRoute.totalDistance.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">km</span></span>
+                   </div>
+                   <div>
+                       {/* Placeholder for future time estimation if added */}
+                   </div>
+                </div>
               </div>
-            </TabsContent>
+            )}
 
-            <TabsContent value="comparison" className="mt-4">
-              <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-primary">Comparação de Desempenho dos Algoritmos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      {calculatedRoutes.nearestNeighbor && (
-                        <div
-                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "nearestNeighbor" ? "border-primary" : "border-border"}`}
-                        >
-                          <h3 className="text-foreground font-bold mb-2">Vizinho Mais Próximo</h3>
-                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
-                          <p className="text-primary text-xl font-bold mb-2">
-                            {calculatedRoutes.nearestNeighbor.totalDistance.toFixed(2)} km
-                          </p>
-                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
-                          <p className="text-success text-sm">Rápido</p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedAlgorithm("nearestNeighbor")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "nearestNeighbor" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
-                          >
-                            {selectedAlgorithm === "nearestNeighbor" ? "Selecionado" : "Selecionar"}
-                          </Button>
-                        </div>
-                      )}
+          </CardContent>
+        </Card>
+      </div>
 
-                      {calculatedRoutes.twoOpt && (
-                        <div
-                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "twoOpt" ? "border-primary" : "border-border"}`}
-                        >
-                          <h3 className="text-foreground font-bold mb-2">Algoritmo 2-Opt</h3>
-                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
-                          <p className="text-primary text-xl font-bold mb-2">
-                            {calculatedRoutes.twoOpt.totalDistance.toFixed(2)} km
-                          </p>
-                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
-                          <p className="text-success text-sm">Médio</p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedAlgorithm("twoOpt")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "twoOpt" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
-                          >
-                            {selectedAlgorithm === "twoOpt" ? "Selecionado" : "Selecionar"}
-                          </Button>
-                        </div>
-                      )}
-
-                      {calculatedRoutes.genetic && (
-                        <div
-                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "genetic" ? "border-primary" : "border-border"}`}
-                        >
-                          <h3 className="text-foreground font-bold mb-2">Algoritmo Genético</h3>
-                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
-                          <p className="text-primary text-xl font-bold mb-2">
-                            {calculatedRoutes.genetic.totalDistance.toFixed(2)} km
-                          </p>
-                          <p className="text-muted-foreground text-sm mb-1">Cálculo:</p>
-                          <p className="text-success text-sm">Complexo</p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedAlgorithm("genetic")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "genetic" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
-                          >
-                            {selectedAlgorithm === "genetic" ? "Selecionado" : "Selecionar"}
-                          </Button>
-                        </div>
-                      )}
-
-                      {calculatedRoutes.best && (
-                        <div
-                          className={`bg-card p-4 rounded-md border-2 ${selectedAlgorithm === "best" ? "border-success" : "border-border"}`}
-                        >
-                          <h3 className="text-foreground font-bold mb-2">Melhor Resultado</h3>
-                          <p className="text-muted-foreground text-sm mb-1">Distância Total:</p>
-                          <p className="text-primary text-xl font-bold mb-2">
-                            {calculatedRoutes.best.totalDistance.toFixed(2)} km
-                          </p>
-                          <p className="text-muted-foreground text-sm mb-1">Algoritmo:</p>
-                          <p className="text-success text-sm">
-                            {calculatedRoutes.best.totalDistance === calculatedRoutes.nearestNeighbor?.totalDistance
-                              ? "Vizinho Mais Próximo"
-                              : calculatedRoutes.best.totalDistance === calculatedRoutes.twoOpt?.totalDistance
-                                ? "2-Opt"
-                                : "Genético"}
-                          </p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedAlgorithm("best")}
-                            className={`mt-2 w-full ${selectedAlgorithm === "best" ? "bg-primary text-primary-foreground" : "border-primary text-primary hover:bg-accent"}`}
-                          >
-                            {selectedAlgorithm === "best" ? "Selecionado" : "Selecionar"}
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="bg-card p-4 rounded-md border border-border">
-                      <h3 className="text-foreground font-bold mb-4">Comparação de Distâncias</h3>
-                      <div className="space-y-4">
-                        {calculatedRoutes.nearestNeighbor && (
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-foreground">Vizinho Mais Próximo</span>
-                              <span className="text-primary">
-                                {calculatedRoutes.nearestNeighbor.totalDistance.toFixed(2)} km
-                              </span>
-                            </div>
-                            <div className="w-full bg-muted rounded-full h-2.5">
-                              <div
-                                className="bg-primary h-2.5 rounded-full"
-                                style={{
-                                  width: `${
-                                    (calculatedRoutes.nearestNeighbor.totalDistance /
-                                      Math.max(
-                                        calculatedRoutes.nearestNeighbor.totalDistance,
-                                        calculatedRoutes.twoOpt?.totalDistance || 0,
-                                        calculatedRoutes.genetic?.totalDistance || 0,
-                                      )) *
-                                    100
-                                  }%`,
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
-
-                        {calculatedRoutes.twoOpt && (
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-foreground">2-Opt Algorithm</span>
-                              <span className="text-primary">
-                                {calculatedRoutes.twoOpt.totalDistance.toFixed(2)} km
-                              </span>
-                            </div>
-                            <div className="w-full bg-muted rounded-full h-2.5">
-                              <div
-                                className="bg-primary h-2.5 rounded-full"
-                                style={{
-                                  width: `${
-                                    (calculatedRoutes.twoOpt.totalDistance /
-                                      Math.max(
-                                        calculatedRoutes.nearestNeighbor?.totalDistance || 0,
-                                        calculatedRoutes.twoOpt.totalDistance,
-                                        calculatedRoutes.genetic?.totalDistance || 0,
-                                      )) *
-                                    100
-                                  }%`,
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
-
-                        {calculatedRoutes.genetic && (
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-foreground">Genetic Algorithm</span>
-                              <span className="text-primary">
-                                {calculatedRoutes.genetic.totalDistance.toFixed(2)} km
-                              </span>
-                            </div>
-                            <div className="w-full bg-muted rounded-full h-2.5">
-                              <div
-                                className="bg-primary h-2.5 rounded-full"
-                                style={{
-                                  width: `${
-                                    (calculatedRoutes.genetic.totalDistance /
-                                      Math.max(
-                                        calculatedRoutes.nearestNeighbor?.totalDistance || 0,
-                                        calculatedRoutes.twoOpt?.totalDistance || 0,
-                                        calculatedRoutes.genetic.totalDistance,
-                                      )) *
-                                    100
-                                  }%`,
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="bg-card p-4 rounded-md border border-border">
-                      <h3 className="text-foreground font-bold mb-2">Informações sobre Algoritmos</h3>
-                      <div className="space-y-2 text-sm text-muted-foreground">
-                        <p>
-                          <span className="text-primary font-bold">Vizinho Mais Próximo:</span> Um algoritmo guloso que
-                          sempre seleciona o ponto não visitado mais próximo. Rápido, mas pode não encontrar a solução ótima.
-                        </p>
-                        <p>
-                          <span className="text-primary font-bold">2-Opt:</span> Melhora uma rota inicial trocando
-                          arestas para reduzir a distância total. Melhores resultados do que o Vizinho Mais Próximo com tempo de cálculo moderado.
-                        </p>
-                        <p>
-                          <span className="text-primary font-bold">Algoritmo Genético:</span> Usa princípios evolutivos
-                          para encontrar rotas ótimas. Pode encontrar melhores soluções para rotas complexas, mas requer mais cálculo.
-                        </p>
-                        <p>
-                          <span className="text-success font-bold">Melhor Resultado:</span> Seleciona automaticamente a rota
-                          com a menor distância total entre todos os algoritmos calculados.
-                        </p>
-                      </div>
-                    </div>
-                  </div>                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="performance" className="mt-4">
-              <MapPerformanceComparison
-                route={selectedRoute}
-                points={points}
-                startPointId={startPointId !== "auto" ? Number.parseInt(startPointId) : undefined}
-                endPointId={endPointId !== "auto" ? Number.parseInt(endPointId) : undefined}
-              />
-            </TabsContent>
-          </Tabs>
-        </div>
-      )}
+      {/* Main Content - Map */}
+      <div className="flex-1 h-full lg:h-auto rounded-xl overflow-hidden border border-border shadow-lg relative bg-white dark:bg-neutral-900">
+        <LeafletMapWrapper
+           markers={points.map(p => ({ lat: p.latitude, lng: p.longitude, title: p.description, description: `ID: ${p.id}` }))}
+           route={selectedRoute ? selectedRoute.path.map(idx => [points[idx].latitude, points[idx].longitude]) : []}
+        />
+        
+        {/* Floating status overlay if needed */}
+        {!selectedRoute && points.length === 0 && (
+           <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-[500] pointer-events-none">
+              <div className="bg-card p-6 rounded-xl shadow-xl border text-center max-w-sm">
+                 <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Map className="h-6 w-6" />
+                 </div>
+                 <h3 className="font-semibold text-lg mb-2">Pronto para Começar</h3>
+                 <p className="text-muted-foreground text-sm">Adicione pontos manualmente ou importe um arquivo para visualizar a rota no mapa.</p>
+              </div>
+           </div>
+        )}
+      </div>
     </div>
   )
 }

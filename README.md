@@ -1,4 +1,4 @@
-# 🗺️ Better Route - Otimizador Avançado de Rotas
+# 🗺️ Melhor Rota - Otimizador Avançado de Rotas
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.4-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
@@ -7,7 +7,7 @@
 
 > **Uma aplicação web moderna e poderosa para otimização de rotas usando múltiplos algoritmos avançados.**
 
-![Better Route Preview](./public/images/route-example.png)
+![Melhor Rota Preview](./public/images/route-example.png)
 
 ## ✨ Características Principais
 

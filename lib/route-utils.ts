@@ -280,7 +280,7 @@ export function calculateRouteWithEndpointsNearestNeighbor(
 
 /**
  * Calculate the optimal route using a genetic algorithm
- * This is a more advanced algorithm that can find better routes than nearest neighbor
+ * This is a more advanced algorithm that can find Melhor Rotas than nearest neighbor
  */
 export function calculateRouteGeneticAlgorithm(points: RoutePoint[]): CalculatedRoute {
   if (points.length < 2) {

@@ -2,9 +2,12 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Better Route',
+  title: 'Melhor Rota',
   description: 'Created with Love',
   generator: 'Leonardo Juvencio',
+  icons: {
+    icon: '/favicon.png',
+  },
 }
 
 export default function RootLayout({
